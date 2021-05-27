@@ -2,6 +2,7 @@
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 
+
 am4core.ready(function () {
 
     function createTrendLine(data) {
@@ -90,7 +91,7 @@ am4core.ready(function () {
      }, {
          "date": "2011-08-08",
          "open": "131.11",
-         "high": "133.00",
+         "high": "140.00",
          "low": "125.09",
          "close": "126.39"
      }, {
@@ -388,9 +389,5 @@ am4core.ready(function () {
         {"date": "2011-10-15", "value": "170.18"}
     ]);
 
-    createTrendLine([
-        { "date": "2012-01-17", "value": 16 },
-        { "date": "2012-01-22", "value": 10 }
-    ]);
 
 }); // end am4core.ready()
