@@ -1,0 +1,60 @@
+version: '3.7'
+
+networks:
+  app-tier:
+    driver: bridge
+
+services:
+
+  pgsql:
+    container_name: pgsql
+    image: postgres:13.2-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - ${DATA_PATH}/pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: saas_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - app-tier
+
+  clickhouse:
+    container_name: clickhouse
+    image: yandex/clickhouse-server:20.3.11.97
+    volumes:
+      - ${DATA_PATH}/clickhouse:/var/lib/clickhouse
+      - ${LOG_PATH}:/var/log/clickhouse-server
+    ports:
+      - 8123:8123
+      - 9090:9000
+    ulimits:
+      nofile:
+        soft: "262144"
+        hard: "262144"
+    networks:
+      - app-tier
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management-alpine
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=password
+    volumes:
+      - ${DATA_PATH}/rabbitmq/data/:/var/lib/rabbitmq/
+      - ${LOG_PATH}:/var/log/rabbitmq
+    networks:
+      - app-tier
+
+  memcached:
+    image: 'bitnami/memcached:1-debian-10'
+    container_name: memcached
+    ports:
+      - 11211:11211
+    networks:
+      - app-tier
