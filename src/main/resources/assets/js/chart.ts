@@ -20,7 +20,7 @@ am4core.ready(function () {
     }
 
 
-    let chart = am4core.create("chartdiv", am4charts.XYChart);
+    let chart = am4core.create("b-chart", am4charts.XYChart);
     chart.paddingRight = 20;
 
     chart.dateFormatter.inputDateFormat = "yyyy-MM-dd";
