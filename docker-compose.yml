@@ -51,10 +51,10 @@ services:
     networks:
       - app-tier
 
-  memcached:
-    image: 'bitnami/memcached:1-debian-10'
-    container_name: memcached
+  redis:
+    image: 'redis:6.2.3-alpine'
+    container_name: redis
     ports:
-      - 11211:11211
+      - 6379:6379
     networks:
       - app-tier
