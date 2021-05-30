@@ -20,34 +20,19 @@ services:
     networks:
       - app-tier
 
-  clickhouse:
-    container_name: clickhouse
-    image: yandex/clickhouse-server:20.3.11.97
+  influxdb:
+    container_name: influxdb
+    image: influxdb:2.0.6-alpine
+    ports:
+      - 8086:8086
     volumes:
-      - ${DATA_PATH}/clickhouse:/var/lib/clickhouse
-      - ${LOG_PATH}:/var/log/clickhouse-server
-    ports:
-      - 8123:8123
-      - 9090:9000
-    ulimits:
-      nofile:
-        soft: "262144"
-        hard: "262144"
-    networks:
-      - app-tier
-
-  rabbitmq:
-    container_name: rabbitmq
-    image: rabbitmq:3-management-alpine
-    ports:
-      - 5672:5672
-      - 15672:15672
+      - ${DATA_PATH}/influxdb:/var/lib/influxdb2
     environment:
-      - RABBITMQ_DEFAULT_USER=user
-      - RABBITMQ_DEFAULT_PASS=password
-    volumes:
-      - ${DATA_PATH}/rabbitmq/data/:/var/lib/rabbitmq/
-      - ${LOG_PATH}:/var/log/rabbitmq
+      - DOCKER_INFLUXDB_INIT_USERNAME=influxdb
+      - DOCKER_INFLUXDB_INIT_PASSWORD=influxdb
+      - DOCKER_INFLUXDB_INIT_ORG=jtradeplatform
+      - DOCKER_INFLUXDB_INIT_BUCKET=charts
+      - DOCKER_INFLUXDB_INIT_RETENTION=30d
     networks:
       - app-tier
 
