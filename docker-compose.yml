@@ -9,6 +9,7 @@ services:
   pgsql:
     container_name: pgsql
     image: postgres:13.2-alpine
+    restart: always
     ports:
       - 5432:5432
     volumes:
@@ -23,6 +24,7 @@ services:
   influxdb:
     container_name: influxdb
     image: influxdb:2.0.6-alpine
+    restart: always
     ports:
       - 8086:8086
     volumes:
@@ -34,11 +36,13 @@ services:
       - DOCKER_INFLUXDB_INIT_BUCKET=charts
       - DOCKER_INFLUXDB_INIT_RETENTION=30d
       - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=my-super-secret-auth-token
     networks:
       - app-tier
 
   redis:
     image: 'redis:6.2.3-alpine'
+    restart: always
     container_name: redis
     ports:
       - 6379:6379

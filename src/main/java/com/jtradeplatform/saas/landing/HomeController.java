@@ -1,5 +1,8 @@
 package com.jtradeplatform.saas.landing;
 
+import com.jtradeplatform.saas.candlestick.CandlestickRepository;
+import com.jtradeplatform.saas.candlestick.CandlestickService;
+import com.jtradeplatform.saas.configs.InfluxdbConfig;
 import com.jtradeplatform.saas.currencyPair.CurrencyPair;
 import com.jtradeplatform.saas.currencyPair.CurrencyPairRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +14,10 @@ public class HomeController {
 
     @Autowired
     private CurrencyPairRepository repo;
+    @Autowired
+    CandlestickService candlestickService;
+   //@Autowired
+   //private CandlestickRepository cdRepo;
 
     @GetMapping
     public String main() {
@@ -23,7 +30,14 @@ public class HomeController {
     }
 
     @GetMapping("/test")
-    public String test() {
+    public String test() throws InterruptedException {
+        candlestickService.test();
+        return "faq";
+    }
+
+    @GetMapping("/clear")
+    public String clear() {
+        candlestickService.deleteAll();
         return "faq";
     }
 
@@ -34,4 +48,5 @@ public class HomeController {
         repo.save(cp);
         return "index";
     }
+
 }
