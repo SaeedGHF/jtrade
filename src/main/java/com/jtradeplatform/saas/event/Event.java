@@ -1,6 +1,6 @@
 package com.jtradeplatform.saas.event;
 
-import com.jtradeplatform.saas.currencyPair.CurrencyPair;
+import com.jtradeplatform.saas.symbol.Symbol;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -14,16 +14,16 @@ public class Event {
     private Long id;
     private String pattern;
     @ManyToOne
-    private CurrencyPair currencyPair;
+    private Symbol symbol;
     @Column(name = "created_at")
     @CreationTimestamp
     private Date createdAt;
 
-    public CurrencyPair getCurrencyPair() {
-        return currencyPair;
+    public Symbol getSymbol() {
+        return symbol;
     }
 
-    public void setCurrencyPair(CurrencyPair currencyPair) {
-        this.currencyPair = currencyPair;
+    public void setSymbol(Symbol symbol) {
+        this.symbol = symbol;
     }
 }

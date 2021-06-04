@@ -1,10 +1,8 @@
 package com.jtradeplatform.saas.landing;
 
-import com.jtradeplatform.saas.candlestick.CandlestickRepository;
 import com.jtradeplatform.saas.candlestick.CandlestickService;
-import com.jtradeplatform.saas.configs.InfluxdbConfig;
-import com.jtradeplatform.saas.currencyPair.CurrencyPair;
-import com.jtradeplatform.saas.currencyPair.CurrencyPairRepository;
+import com.jtradeplatform.saas.symbol.SymbolRepository;
+import com.jtradeplatform.saas.symbol.SymbolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,11 +11,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
 
     @Autowired
-    private CurrencyPairRepository repo;
+    private SymbolRepository repo;
     @Autowired
     CandlestickService candlestickService;
-   //@Autowired
-   //private CandlestickRepository cdRepo;
+    @Autowired
+    SymbolService symbolService;
+    //@Autowired
+    //private CandlestickRepository cdRepo;
 
     @GetMapping
     public String main() {
@@ -41,12 +41,9 @@ public class HomeController {
         return "faq";
     }
 
-    @GetMapping("/insert")
-    public String insert(){
-        CurrencyPair cp = new CurrencyPair();
-        cp.setName("BTCUSDT");
-        repo.save(cp);
-        return "index";
+    @GetMapping("/binance")
+    public String binance() {
+        symbolService.refreshAll();
+        return "faq";
     }
-
 }

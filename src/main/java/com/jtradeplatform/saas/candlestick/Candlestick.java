@@ -2,7 +2,6 @@ package com.jtradeplatform.saas.candlestick;
 
 import com.influxdb.annotations.Column;
 import com.influxdb.annotations.Measurement;
-import org.checkerframework.checker.nullness.qual.RequiresNonNull;
 
 import java.time.Instant;
 

@@ -1,4 +1,4 @@
-package com.jtradeplatform.saas.currencyPair;
+package com.jtradeplatform.saas.symbol;
 
 import com.jtradeplatform.saas.event.Event;
 import org.hibernate.annotations.CreationTimestamp;
@@ -9,16 +9,18 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "currency_pairs")
-public class CurrencyPair {
+@Table(name = "symbols")
+public class Symbol {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(unique = true, nullable = false)
     private Integer id;
     @Column(unique = true, nullable = false)
     private String name;
-    @OneToMany(mappedBy = "")
-    @JoinColumn(name = "currency_pair_id")
+    @Column(nullable = false)
+    private Long pricePrecision;
+    @OneToMany
+    @JoinColumn(name = "symbol_id")
     private List<Event> events;
     @Column(name = "created_at")
     @CreationTimestamp
@@ -26,6 +28,14 @@ public class CurrencyPair {
     @Column(name = "updated_at")
     @UpdateTimestamp
     private Date updatedAt;
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
 
     public List<Event> getEvents() {
         return events;
@@ -35,7 +45,7 @@ public class CurrencyPair {
         this.events = events;
     }
 
-    public CurrencyPair() {
+    public Symbol() {
     }
 
     public Integer getId() {
@@ -44,6 +54,14 @@ public class CurrencyPair {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Long getPricePrecision() {
+        return pricePrecision;
+    }
+
+    public void setPricePrecision(Long pricePrecision) {
+        this.pricePrecision = pricePrecision;
     }
 
     public String getName() {
