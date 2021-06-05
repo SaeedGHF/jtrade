@@ -1,31 +1,61 @@
 package com.jtradeplatform.saas.candlestick;
 
-import com.influxdb.client.DeleteApi;
-import com.influxdb.client.InfluxDBClient;
-import com.influxdb.client.WriteApi;
+import com.influxdb.client.*;
 import com.influxdb.client.domain.WritePrecision;
 import com.influxdb.exceptions.InfluxException;
-import com.jtradeplatform.saas.configs.InfluxdbConfig;
+import com.influxdb.query.FluxRecord;
+import com.influxdb.query.FluxTable;
+import com.jtradeplatform.saas.configs.InfluxdbChartConfig;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class CandlestickRepository {
-    private final InfluxDBClient client;
-    private InfluxdbConfig influxdbConfig;
 
-    CandlestickRepository(InfluxdbConfig cnfg) {
-        client = cnfg.getClient();
-        influxdbConfig = cnfg;
+    public final String MEASUREMENT_NAME = "candlestick";
+    public final int HISTORY_HOURS = 48;
+
+    private final InfluxDBClient client;
+    private final InfluxdbChartConfig influxdbConfig;
+
+    CandlestickRepository(InfluxdbChartConfig config) {
+        this.client = config.getClient();
+        this.influxdbConfig = config;
     }
 
     public Candlestick save(Candlestick candlestick) {
         WriteApi writeApi = client.getWriteApi();
         writeApi.writeMeasurement(WritePrecision.S, candlestick);
         return candlestick;
+    }
+
+    public void findAllBySymbol(Integer symbol) {
+        String flux = String.format("from(bucket: \"%s\")\n" +
+                        "  |> range(start: %s, stop: %s)\n" +
+                        "  |> filter(fn: (r) => r[\"_measurement\"] == \"%s\")\n" +
+                        "  |> filter(fn: (r) => r[\"symbol\"] == \"%s\")",
+                influxdbConfig.getBucket(),
+                Instant.now().minus(HISTORY_HOURS, ChronoUnit.HOURS),
+                Instant.now(),
+                MEASUREMENT_NAME,
+                symbol
+        );
+
+        QueryApi queryApi = client.getQueryApi();
+
+        List<FluxTable> tables = queryApi.query(flux);
+        for (FluxTable fluxTable : tables) {
+            List<FluxRecord> records = fluxTable.getRecords();
+            for (FluxRecord fluxRecord : records) {
+                System.out.println(fluxRecord);
+            }
+        }
     }
 
     public void saveAll(List<Candlestick> list) {
@@ -37,13 +67,13 @@ public class CandlestickRepository {
         DeleteApi deleteApi = client.getDeleteApi();
 
         try {
-            OffsetDateTime start = OffsetDateTime.now().minus(1, ChronoUnit.HOURS);
+            OffsetDateTime start = OffsetDateTime.now().minusDays(1000);
             OffsetDateTime stop = OffsetDateTime.now().plusDays(1);
 
             deleteApi.delete(start, stop, "", influxdbConfig.getBucket(), influxdbConfig.getOrg());
 
         } catch (InfluxException ie) {
-            System.out.println("InfluxException: " + ie);
+            System.err.println("InfluxException: " + ie);
         }
     }
 }

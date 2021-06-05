@@ -1,67 +1,69 @@
 package com.jtradeplatform.saas.candlestick;
 
+import com.binance.api.client.domain.market.CandlestickInterval;
+import com.jtradeplatform.saas.services.BinanceSpot;
+import com.jtradeplatform.saas.symbol.Symbol;
+import com.jtradeplatform.saas.symbol.SymbolRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CandlestickService {
-    CandlestickRepository repo;
 
-    CandlestickService(CandlestickRepository candlestickRepository) {
-        repo = candlestickRepository;
+    CandlestickRepository candlestickRepository;
+    SymbolRepository symbolRepository;
+    BinanceSpot binanceSpot;
+    Closeable watcher;
+
+    private static final Map<String, Candlestick> candlestickQueue = new HashMap<>();
+
+    CandlestickService(CandlestickRepository candlestickRepository, SymbolRepository symbolRepository, BinanceSpot binanceSpot) {
+        this.candlestickRepository = candlestickRepository;
+        this.symbolRepository = symbolRepository;
+        this.binanceSpot = binanceSpot;
     }
 
-    public void deleteAll(){
-        repo.deleteAll();
+    public static void addToQueue(Candlestick candlestick) {
+        String key = candlestick.period + "_" + candlestick.symbol;
+        candlestickQueue.put(key, candlestick);
     }
 
-    public void test() {
-        Candlestick c1 = new Candlestick();
-        c1.open = 1.4456D;
-        c1.high = 1.4856D;
-        c1.low = 1.4256D;
-        c1.close = 1.4355D;
-        c1.period = 1;
-        c1.currencyPair = 2;
-        c1.time = Instant.now().minusSeconds(30);
+    public void runQueue() {
+        List<Candlestick> list = new ArrayList<>(candlestickQueue.values());
+        candlestickRepository.saveAll(list);
+    }
 
-        Candlestick c2 = new Candlestick();
-        c2.open = 1.1456D;
-        c2.high = 1.1856D;
-        c2.low = 1.1256D;
-        c2.close = 1.1355D;
-        c2.period = 1;
-        c2.currencyPair = 2;
-        c2.time = Instant.now().minusSeconds(180);
+    public void deleteAll() {
+        candlestickRepository.deleteAll();
+    }
 
-        Candlestick c3 = new Candlestick();
-        c3.open = 1.3456D;
-        c3.high = 1.3856D;
-        c3.low = 1.3256D;
-        c3.close = 1.3355D;
-        c3.period = 1;
-        c3.currencyPair = 2;
-        c3.time = Instant.now().minusSeconds(260);
+    public void runWatcher() {
+        List<Symbol> symbolEntities = symbolRepository.findAll();
+        List<String> symbolList = new ArrayList<>();
+        Map<String, Integer> symbolMap = new HashMap<>();
+        for (Symbol symbol : symbolEntities) {
+            symbolList.add(symbol.getName());
+            symbolMap.put(symbol.getName(), symbol.getId());
+        }
 
-        Candlestick c4 = new Candlestick();
-        c4.open = 1.7456D;
-        c4.high = 1.7856D;
-        c4.low = 1.7256D;
-        c4.close = 1.7355D;
-        c4.period = 1;
-        c4.currencyPair = 2;
-        c4.time = Instant.now().minusSeconds(360);
+        CandlestickHandler candlestickHandler = new CandlestickHandler(symbolMap);
+        watcher = binanceSpot.subscribeCandlesticks(symbolList, CandlestickInterval.ONE_MINUTE, candlestickHandler);
+    }
 
-
-        List<Candlestick> list = new ArrayList<>();
-        list.add(c1);
-        list.add(c2);
-        list.add(c3);
-        list.add(c4);
-
-        repo.saveAll(list);
+    public void stopWatcher() {
+        if (watcher == null) {
+            return;
+        }
+        try {
+            watcher.close();
+        } catch (IOException e) {
+            System.err.println(e.toString());
+        }
     }
 }

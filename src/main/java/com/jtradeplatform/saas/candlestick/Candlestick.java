@@ -8,14 +8,10 @@ import java.time.Instant;
 @Measurement(name = "candlestick")
 public class Candlestick {
 
-    public Candlestick() {
-
-    }
-
-    public Candlestick(Instant time, Short period, Integer currencyPair, Double open, Double high, Double low, Double close) {
+    public Candlestick(Instant time, String period, Integer symbol, Double open, Double high, Double low, Double close) {
         this.time = time;
         this.period = period;
-        this.currencyPair = currencyPair;
+        this.symbol = symbol;
         this.open = open;
         this.high = high;
         this.low = low;
@@ -26,10 +22,10 @@ public class Candlestick {
     Instant time;
 
     @Column(tag = true)
-    Short period;
+    String period;
 
     @Column(tag = true)
-    Integer currencyPair;
+    Integer symbol;
 
     @Column
     Double open;

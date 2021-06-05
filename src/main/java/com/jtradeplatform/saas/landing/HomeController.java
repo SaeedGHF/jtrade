@@ -16,8 +16,6 @@ public class HomeController {
     CandlestickService candlestickService;
     @Autowired
     SymbolService symbolService;
-    //@Autowired
-    //private CandlestickRepository cdRepo;
 
     @GetMapping
     public String main() {
@@ -29,12 +27,6 @@ public class HomeController {
         return "faq";
     }
 
-    @GetMapping("/test")
-    public String test() throws InterruptedException {
-        candlestickService.test();
-        return "faq";
-    }
-
     @GetMapping("/clear")
     public String clear() {
         candlestickService.deleteAll();
@@ -43,7 +35,8 @@ public class HomeController {
 
     @GetMapping("/binance")
     public String binance() {
-        symbolService.refreshAll();
+        candlestickService.stopWatcher();
+        candlestickService.runWatcher();
         return "faq";
     }
 }
