@@ -11,9 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class CandlestickRepository {
@@ -30,8 +28,10 @@ public class CandlestickRepository {
     }
 
     public Candlestick save(Candlestick candlestick) {
-        WriteApi writeApi = client.getWriteApi();
-        writeApi.writeMeasurement(WritePrecision.S, candlestick);
+        try (WriteApi writeApi = client.getWriteApi()) {
+            writeApi.writeMeasurement(WritePrecision.S, candlestick);
+        }
+
         return candlestick;
     }
 
@@ -59,16 +59,16 @@ public class CandlestickRepository {
     }
 
     public void saveAll(List<Candlestick> list) {
-        WriteApi writeApi = client.getWriteApi();
-        writeApi.writeMeasurements(WritePrecision.S, list);
-        writeApi.flush();
+        try (WriteApi writeApi = client.getWriteApi()) {
+            writeApi.writeMeasurements(WritePrecision.S, list);
+        }
     }
 
     public void deleteAll() {
         DeleteApi deleteApi = client.getDeleteApi();
 
         try {
-            OffsetDateTime start = OffsetDateTime.now().minusDays(1000);
+            OffsetDateTime start = OffsetDateTime.now().minusDays(30);
             OffsetDateTime stop = OffsetDateTime.now().plusDays(1);
 
             deleteApi.delete(start, stop, "", influxdbConfig.getBucket(), influxdbConfig.getOrg());

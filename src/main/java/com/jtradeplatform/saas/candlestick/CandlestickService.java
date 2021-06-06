@@ -36,9 +36,7 @@ public class CandlestickService {
     public void runQueue() {
         synchronized (candlestickQueue) {
             List<Candlestick> list = new ArrayList<>(candlestickQueue.values());
-            for (Candlestick c : list) {
-                candlestickQueue.remove(c.toString());
-            }
+            candlestickQueue.clear();
             candlestickRepository.saveAll(list);
         }
     }
@@ -67,7 +65,7 @@ public class CandlestickService {
         try {
             watcher.close();
         } catch (IOException e) {
-            System.err.println(e.toString());
+            System.err.println(e);
         }
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
+
 @Configuration
 @EnableAsync
 @EnableScheduling
@@ -18,7 +19,7 @@ public class ScheduleConfig {
     ScheduleConfig(SymbolService symbolService, CandlestickService candlestickService) {
         this.symbolService = symbolService;
         this.candlestickService = candlestickService;
-        //this.refreshSymbolList();
+        this.refreshSymbolList();
     }
 
     @Scheduled(cron = "0 0 6 * * *")
@@ -26,6 +27,7 @@ public class ScheduleConfig {
         symbolService.refreshAll();
     }
 
+    //
     @Scheduled(cron = "*/2 * * * * *")
     public void runCandlestickQueue() {
         candlestickService.runQueue();
