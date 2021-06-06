@@ -36,9 +36,11 @@ public class CandlestickService {
     }
 
     public void runQueue() {
-        List<Candlestick> list = new ArrayList<>(candlestickQueue.values());
-        candlestickQueue.clear();
-        candlestickRepository.saveAll(list);
+        synchronized (candlestickQueue){
+            List<Candlestick> list = new ArrayList<>(candlestickQueue.values());
+            candlestickQueue.clear();
+            candlestickRepository.saveAll(list);
+        }
     }
 
     public void deleteAll() {
