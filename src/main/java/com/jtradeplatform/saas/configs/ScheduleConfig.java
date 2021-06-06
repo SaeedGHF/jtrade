@@ -19,7 +19,6 @@ public class ScheduleConfig {
     ScheduleConfig(SymbolService symbolService, CandlestickService candlestickService) {
         this.symbolService = symbolService;
         this.candlestickService = candlestickService;
-        this.refreshSymbolList();
     }
 
     @Scheduled(cron = "0 0 6 * * *")
@@ -28,7 +27,7 @@ public class ScheduleConfig {
     }
 
     //
-    @Scheduled(cron = "*/2 * * * * *")
+    @Scheduled(cron = "*/1 * * * * *")
     public void runCandlestickQueue() {
         candlestickService.runQueue();
     }

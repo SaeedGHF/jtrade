@@ -12,6 +12,7 @@ public class SymbolService {
     SymbolService(BinanceFutures binanceFutures, SymbolRepository symbolRepository) {
         this.binanceFutures = binanceFutures;
         this.symbolRepository = symbolRepository;
+        //this.refreshAll();
     }
 
     public void refreshAll() {

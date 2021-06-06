@@ -77,7 +77,6 @@ public class InfluxdbChartConfig {
                     .url(url)
                     .authenticateToken(token.toCharArray())
                     .org(org)
-                    //.logLevel(LogLevel.BASIC)
                     .bucket(bucket)
                     .build();
 

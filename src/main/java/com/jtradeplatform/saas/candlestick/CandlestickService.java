@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class CandlestickService {
@@ -21,12 +22,13 @@ public class CandlestickService {
     BinanceSpot binanceSpot;
     Closeable watcher;
 
-    private static final Map<String, Candlestick> candlestickQueue = new HashMap<>();
+    private static final Map<String, Candlestick> candlestickQueue = new ConcurrentHashMap<>();
 
     CandlestickService(CandlestickRepository candlestickRepository, SymbolRepository symbolRepository, BinanceSpot binanceSpot) {
         this.candlestickRepository = candlestickRepository;
         this.symbolRepository = symbolRepository;
         this.binanceSpot = binanceSpot;
+        this.runWatcher();
     }
 
     public static void addToQueue(Candlestick candlestick) {
@@ -34,11 +36,9 @@ public class CandlestickService {
     }
 
     public void runQueue() {
-        synchronized (candlestickQueue) {
-            List<Candlestick> list = new ArrayList<>(candlestickQueue.values());
-            candlestickQueue.clear();
-            candlestickRepository.saveAll(list);
-        }
+        List<Candlestick> list = new ArrayList<>(candlestickQueue.values());
+        candlestickQueue.clear();
+        candlestickRepository.saveAll(list);
     }
 
     public void deleteAll() {
