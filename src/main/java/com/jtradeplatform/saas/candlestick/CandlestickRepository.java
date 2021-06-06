@@ -61,6 +61,7 @@ public class CandlestickRepository {
     public void saveAll(List<Candlestick> list) {
         WriteApi writeApi = client.getWriteApi();
         writeApi.writeMeasurements(WritePrecision.S, list);
+        writeApi.flush();
     }
 
     public void deleteAll() {

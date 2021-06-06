@@ -38,4 +38,13 @@ public class Candlestick {
 
     @Column
     Double close;
+
+    @Override
+    public String toString() {
+        return "Candlestick{" +
+                "time=" + time +
+                ", period='" + period + '\'' +
+                ", symbol=" + symbol +
+                '}';
+    }
 }

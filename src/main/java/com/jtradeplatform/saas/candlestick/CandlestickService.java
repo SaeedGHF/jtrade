@@ -30,13 +30,17 @@ public class CandlestickService {
     }
 
     public static void addToQueue(Candlestick candlestick) {
-        String key = candlestick.period + "_" + candlestick.symbol;
-        candlestickQueue.put(key, candlestick);
+        candlestickQueue.put(candlestick.toString(), candlestick);
     }
 
     public void runQueue() {
-        List<Candlestick> list = new ArrayList<>(candlestickQueue.values());
-        candlestickRepository.saveAll(list);
+        synchronized (candlestickQueue) {
+            List<Candlestick> list = new ArrayList<>(candlestickQueue.values());
+            for (Candlestick c : list) {
+                candlestickQueue.remove(c.toString());
+            }
+            candlestickRepository.saveAll(list);
+        }
     }
 
     public void deleteAll() {
