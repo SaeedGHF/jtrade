@@ -16,11 +16,11 @@ public class CandlestickHandler implements BinanceApiCallback<CandlestickEvent> 
 
     @Override
     public void onResponse(CandlestickEvent e) {
-        int symbolId = symbolMap.get(e.getSymbol());
+        Integer symbolId = symbolMap.get(e.getSymbol());
         Candlestick candlestick = new Candlestick(
                 new Timestamp(e.getOpenTime()).toInstant(),
                 e.getIntervalId(),
-                symbolId,
+                symbolId.toString(),
                 Double.parseDouble(e.getOpen()),
                 Double.parseDouble(e.getHigh()),
                 Double.parseDouble(e.getLow()),

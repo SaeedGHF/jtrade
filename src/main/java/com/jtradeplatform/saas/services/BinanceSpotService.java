@@ -12,12 +12,12 @@ import java.io.Closeable;
 import java.util.List;
 
 @Service
-public final class BinanceSpot {
+public final class BinanceSpotService {
 
     BinanceApiConfig binanceApiConfig;
     BinanceApiWebSocketClient wsClient;
 
-    BinanceSpot(BinanceApiConfig binanceApiConfig) {
+    BinanceSpotService(BinanceApiConfig binanceApiConfig) {
         this.binanceApiConfig = binanceApiConfig;
         this.wsClient = BinanceApiClientFactory.newInstance().newWebSocketClient();
     }

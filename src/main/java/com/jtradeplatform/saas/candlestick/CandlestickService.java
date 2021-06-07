@@ -1,7 +1,7 @@
 package com.jtradeplatform.saas.candlestick;
 
 import com.binance.api.client.domain.market.CandlestickInterval;
-import com.jtradeplatform.saas.services.BinanceSpot;
+import com.jtradeplatform.saas.services.BinanceSpotService;
 import com.jtradeplatform.saas.symbol.Symbol;
 import com.jtradeplatform.saas.symbol.SymbolRepository;
 import org.springframework.stereotype.Service;
@@ -19,12 +19,12 @@ public class CandlestickService {
 
     CandlestickRepository candlestickRepository;
     SymbolRepository symbolRepository;
-    BinanceSpot binanceSpot;
+    BinanceSpotService binanceSpot;
     Closeable watcher;
 
     private static final Map<String, Candlestick> candlestickQueue = new ConcurrentHashMap<>();
 
-    CandlestickService(CandlestickRepository candlestickRepository, SymbolRepository symbolRepository, BinanceSpot binanceSpot) {
+    CandlestickService(CandlestickRepository candlestickRepository, SymbolRepository symbolRepository, BinanceSpotService binanceSpot) {
         this.candlestickRepository = candlestickRepository;
         this.symbolRepository = symbolRepository;
         this.binanceSpot = binanceSpot;

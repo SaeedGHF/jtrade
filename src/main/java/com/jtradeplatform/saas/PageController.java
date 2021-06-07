@@ -1,5 +1,6 @@
-package com.jtradeplatform.saas.landing;
+package com.jtradeplatform.saas;
 
+import com.jtradeplatform.saas.candlestick.CandlestickRepository;
 import com.jtradeplatform.saas.candlestick.CandlestickService;
 import com.jtradeplatform.saas.symbol.SymbolRepository;
 import com.jtradeplatform.saas.symbol.SymbolService;
@@ -8,10 +9,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class HomeController {
+public class PageController {
 
     @Autowired
-    private SymbolRepository repo;
+    private CandlestickRepository repo;
     @Autowired
     CandlestickService candlestickService;
     @Autowired
@@ -30,6 +31,12 @@ public class HomeController {
     @GetMapping("/clear")
     public String clear() {
         candlestickService.deleteAll();
+        return "faq";
+    }
+
+    @GetMapping("/symbol")
+    public String symbol() {
+        symbolService.refreshAll();
         return "faq";
     }
 

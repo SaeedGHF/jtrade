@@ -1,6 +1,5 @@
 package com.jtradeplatform.saas.configs;
 
-import com.influxdb.LogLevel;
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.InfluxDBClientFactory;
 import com.influxdb.client.InfluxDBClientOptions;
@@ -9,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties(prefix = "influxdb")
-public class InfluxdbChartConfig {
+public class InfluxdbConfig {
     String url;
     String username;
     String password;
@@ -18,7 +17,7 @@ public class InfluxdbChartConfig {
     String token;
     InfluxDBClient influxDBClient;
 
-    InfluxdbChartConfig() {
+    InfluxdbConfig() {
 
     }
 

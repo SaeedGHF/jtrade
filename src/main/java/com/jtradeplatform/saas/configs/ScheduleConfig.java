@@ -26,8 +26,7 @@ public class ScheduleConfig {
         symbolService.refreshAll();
     }
 
-    //
-    @Scheduled(cron = "*/1 * * * * *")
+    @Scheduled(cron = "*/5 * * * * *")
     public void runCandlestickQueue() {
         candlestickService.runQueue();
     }

@@ -6,12 +6,11 @@ import com.binance.client.*;
 import org.springframework.stereotype.Service;
 
 @Service
-public final class BinanceFutures {
+public final class BinanceFuturesService {
 
     private final BinanceApiConfig binanceApiConfig;
 
-
-    BinanceFutures(BinanceApiConfig binanceApiConfig) {
+    BinanceFuturesService(BinanceApiConfig binanceApiConfig) {
         this.binanceApiConfig = binanceApiConfig;
     }
 

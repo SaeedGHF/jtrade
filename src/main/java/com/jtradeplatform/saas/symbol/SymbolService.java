@@ -1,15 +1,15 @@
 package com.jtradeplatform.saas.symbol;
 
 import com.binance.client.model.market.ExchangeInfoEntry;
-import com.jtradeplatform.saas.services.BinanceFutures;
+import com.jtradeplatform.saas.services.BinanceFuturesService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SymbolService {
-    BinanceFutures binanceFutures;
+    BinanceFuturesService binanceFutures;
     SymbolRepository symbolRepository;
 
-    SymbolService(BinanceFutures binanceFutures, SymbolRepository symbolRepository) {
+    SymbolService(BinanceFuturesService binanceFutures, SymbolRepository symbolRepository) {
         this.binanceFutures = binanceFutures;
         this.symbolRepository = symbolRepository;
         //this.refreshAll();
