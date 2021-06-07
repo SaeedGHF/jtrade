@@ -6,10 +6,7 @@ import com.jtradeplatform.saas.event.Event;
 import com.jtradeplatform.saas.event.EventRepository;
 import com.jtradeplatform.saas.symbol.Symbol;
 import com.jtradeplatform.saas.symbol.SymbolRepository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,5 +38,10 @@ public class ApiController {
     @GetMapping("events/{symbol}")
     public List<Event> events(@PathVariable("symbol") int symbol) {
         return eventRep.findBySymbol(symbolRep.getById(symbol));
+    }
+
+    @PostMapping("chart/{symbol}/refresh")
+    public void updateChart(@PathVariable int symbol) {
+        // TODO: refresh currency history
     }
 }

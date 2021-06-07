@@ -1,3 +1,2 @@
-require("bootstrap")
 
-import $ = require("jquery");
+require("jquery");

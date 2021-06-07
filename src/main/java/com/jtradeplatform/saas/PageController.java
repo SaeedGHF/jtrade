@@ -5,12 +5,16 @@ import com.jtradeplatform.saas.candlestick.CandlestickService;
 import com.jtradeplatform.saas.symbol.SymbolRepository;
 import com.jtradeplatform.saas.symbol.SymbolService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.HashMap;
+
 @Controller
 public class PageController {
-
+    @Autowired
+    private SimpMessagingTemplate webSocket;
     @Autowired
     private CandlestickRepository repo;
     @Autowired
@@ -25,6 +29,12 @@ public class PageController {
 
     @GetMapping("/faq")
     public String faq() {
+        return "faq";
+    }
+
+    @GetMapping("/test-ws")
+    public String testWs() {
+        webSocket.convertAndSend("/charts/2", "Test message");
         return "faq";
     }
 

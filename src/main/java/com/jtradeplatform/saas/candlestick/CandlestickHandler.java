@@ -2,6 +2,7 @@ package com.jtradeplatform.saas.candlestick;
 
 import com.binance.api.client.BinanceApiCallback;
 import com.binance.api.client.domain.event.CandlestickEvent;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.sql.Timestamp;
 import java.util.Map;
@@ -9,9 +10,12 @@ import java.util.Map;
 public class CandlestickHandler implements BinanceApiCallback<CandlestickEvent> {
 
     Map<String, Integer> symbolMap;
+    SimpMessagingTemplate webSocket;
 
-    CandlestickHandler(Map<String, Integer> symbolMap) {
+
+    CandlestickHandler(Map<String, Integer> symbolMap, SimpMessagingTemplate webSocket) {
         this.symbolMap = symbolMap;
+        this.webSocket = webSocket;
     }
 
     @Override
@@ -27,6 +31,7 @@ public class CandlestickHandler implements BinanceApiCallback<CandlestickEvent> 
                 Double.parseDouble(e.getClose())
         );
         CandlestickService.addToQueue(candlestick);
+        webSocket.convertAndSend("/charts/" + candlestick.getSymbol(), candlestick);
     }
 
     @Override

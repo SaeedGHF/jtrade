@@ -4,6 +4,7 @@ import com.binance.api.client.domain.market.CandlestickInterval;
 import com.jtradeplatform.saas.services.BinanceSpotService;
 import com.jtradeplatform.saas.symbol.Symbol;
 import com.jtradeplatform.saas.symbol.SymbolRepository;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.Closeable;
@@ -21,13 +22,20 @@ public class CandlestickService {
     SymbolRepository symbolRepository;
     BinanceSpotService binanceSpot;
     Closeable watcher;
+    SimpMessagingTemplate webSocket;
 
     private static final Map<String, Candlestick> candlestickQueue = new ConcurrentHashMap<>();
 
-    CandlestickService(CandlestickRepository candlestickRepository, SymbolRepository symbolRepository, BinanceSpotService binanceSpot) {
+    CandlestickService(
+            CandlestickRepository candlestickRepository,
+            SymbolRepository symbolRepository,
+            BinanceSpotService binanceSpot,
+            SimpMessagingTemplate webSocket
+    ) {
         this.candlestickRepository = candlestickRepository;
         this.symbolRepository = symbolRepository;
         this.binanceSpot = binanceSpot;
+        this.webSocket = webSocket;
         this.runWatcher();
     }
 
@@ -36,7 +44,7 @@ public class CandlestickService {
     }
 
     public void runQueue() {
-        synchronized (candlestickQueue){
+        synchronized (candlestickQueue) {
             List<Candlestick> list = new ArrayList<>(candlestickQueue.values());
             candlestickQueue.clear();
             candlestickRepository.saveAll(list);
@@ -56,7 +64,7 @@ public class CandlestickService {
             symbolMap.put(symbol.getName(), symbol.getId());
         }
 
-        CandlestickHandler candlestickHandler = new CandlestickHandler(symbolMap);
+        CandlestickHandler candlestickHandler = new CandlestickHandler(symbolMap, webSocket);
         watcher = binanceSpot.subscribeCandlesticks(symbolList, CandlestickInterval.ONE_MINUTE, candlestickHandler);
     }
 
