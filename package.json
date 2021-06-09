@@ -41,6 +41,8 @@
     "bootstrap": "^5.0.1",
     "jquery": "^3.6.0",
     "lightweight-charts": "^3.3.0",
-    "sockjs-client": "^1.5.1"
+    "moment": "^2.29.1",
+    "sockjs-client": "^1.5.1",
+    "underscore": "^1.13.1"
   }
 }

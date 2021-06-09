@@ -1,6 +1,5 @@
 package com.jtradeplatform.saas.candlestick;
 
-import com.binance.api.client.domain.market.CandlestickInterval;
 import com.jtradeplatform.saas.services.BinanceSpotService;
 import com.jtradeplatform.saas.symbol.Symbol;
 import com.jtradeplatform.saas.symbol.SymbolRepository;
@@ -9,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +44,35 @@ public class CandlestickService {
         candlestickQueue.put(candlestick.toString(), candlestick);
     }
 
+    public void updateAllCharts() {
+        List<Symbol> symbolEntities = symbolRepository.findAll();
+        for (Symbol symbol : symbolEntities) {
+            this.updateSymbolChart(symbol);
+        }
+    }
+
+    public void updateSymbolChart(Symbol symbol) {
+        int minutes = 10_080;
+        int limit = 1000;
+        long to = Instant.now().toEpochMilli();
+        Instant fromInstant = Instant.now().minus(minutes, ChronoUnit.MINUTES);
+
+        while (true) {
+            List<Candlestick> candlesticks = binanceSpot.getSymbolHistory(symbol, limit, fromInstant.toEpochMilli(), to);
+            candlestickRepository.saveAll(candlesticks);
+            fromInstant = fromInstant.plus(limit, ChronoUnit.MINUTES);
+
+            if (candlesticks.isEmpty()) break;
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                System.err.println(e);
+                break;
+            }
+        }
+    }
+
     public void runQueue() {
         synchronized (candlestickQueue) {
             List<Candlestick> list = new ArrayList<>(candlestickQueue.values());
@@ -65,7 +95,7 @@ public class CandlestickService {
         }
 
         CandlestickHandler candlestickHandler = new CandlestickHandler(symbolMap, webSocket);
-        watcher = binanceSpot.subscribeCandlesticks(symbolList, CandlestickInterval.ONE_MINUTE, candlestickHandler);
+        watcher = binanceSpot.subscribeCandlesticks(symbolList, candlestickHandler);
     }
 
     public void stopWatcher() {

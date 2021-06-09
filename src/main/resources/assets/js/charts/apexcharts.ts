@@ -36,6 +36,9 @@ class Chart implements ChartInterface{
     public appendData(data) {
         this.instance.appendData(this.convertSeries(data));
     }
+    public update(data){
+
+    }
 
     private convertSeries(data) {
         let convertedData = [];

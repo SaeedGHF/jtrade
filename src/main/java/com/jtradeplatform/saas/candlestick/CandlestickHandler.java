@@ -30,8 +30,11 @@ public class CandlestickHandler implements BinanceApiCallback<CandlestickEvent> 
                 Double.parseDouble(e.getLow()),
                 Double.parseDouble(e.getClose())
         );
-        CandlestickService.addToQueue(candlestick);
         webSocket.convertAndSend("/charts/" + candlestick.getSymbol(), candlestick);
+
+        if(e.getBarFinal()){
+            CandlestickService.addToQueue(candlestick);
+        }
     }
 
     @Override

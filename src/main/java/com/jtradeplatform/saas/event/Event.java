@@ -19,6 +19,14 @@ public class Event {
     @CreationTimestamp
     private Date createdAt;
 
+    public String getPattern() {
+        return pattern;
+    }
+
+    public void setPattern(String pattern) {
+        this.pattern = pattern;
+    }
+
     public Symbol getSymbol() {
         return symbol;
     }

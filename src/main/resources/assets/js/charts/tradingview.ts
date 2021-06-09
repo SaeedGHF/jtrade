@@ -1,28 +1,24 @@
 import {createChart, CrosshairMode, isBusinessDay} from 'lightweight-charts';
+import "moment/locale/ru";
+import moment = require("moment");
 
 class Chart implements ChartInterface {
-    private instance;
-    private lineSeries;
+    private readonly instance;
+    private readonly lineSeries;
 
     constructor(data) {
         this.instance = createChart("b-chart", {
             localization: {
                 dateFormat: 'dd.MM.yyyy',
                 timeFormatter: businessDayOrTimestamp => {
-                    // console.log(businessDayOrTimestamp);
-
                     if (isBusinessDay(businessDayOrTimestamp)) {
                         return 'Format for business day';
                     }
-
-                    let date = new Date();
-                    date.setSeconds(businessDayOrTimestamp);
-
-                    return date.getHours() + ":" + date.getMinutes();
+                    return moment.unix(businessDayOrTimestamp).format('LLL');
                 },
             },
             timeScale: {
-                rightOffset: 12,
+                rightOffset: 50,
                 barSpacing: 3,
                 fixLeftEdge: true,
                 lockVisibleTimeRangeOnResize: true,
@@ -32,10 +28,8 @@ class Chart implements ChartInterface {
                 visible: true,
                 timeVisible: true,
                 secondsVisible: false,
-                tickMarkFormatter: (time, tickMarkType, locale) => {
-                    console.log(time, tickMarkType, locale);
-                    const year = isBusinessDay(time) ? time.year : new Date(time * 1000).getUTCHours() + ":00";
-                    return String(year);
+                tickMarkFormatter: (time) => {
+                    return moment.unix(time).format('LT');
                 },
             },
             crosshair: {
@@ -50,7 +44,11 @@ class Chart implements ChartInterface {
         this.instance.add();
     }
 
-    public update(candlestick){
+    public clear() {
+        this.instance.removeSeries(this.lineSeries);
+    }
+
+    public update(candlestick) {
         this.lineSeries.update(Chart.convertCandlestick(candlestick));
     }
 
