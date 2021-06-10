@@ -19,9 +19,7 @@ public class Symbol {
     private String name;
     @Column(nullable = false)
     private Long pricePrecision;
-    @OneToMany
-    @JoinColumn(name = "symbol_id")
-    private List<Event> events;
+    //private List<Event> events;
     @Column(name = "created_at")
     @CreationTimestamp
     private Date createdAt;
@@ -37,13 +35,15 @@ public class Symbol {
         return updatedAt;
     }
 
-    public List<Event> getEvents() {
-        return events;
-    }
-
-    public void setEvents(List<Event> events) {
-        this.events = events;
-    }
+    //@OneToMany
+    //@JoinColumn(name="symbol_id")
+    //public List<Event> getEvents() {
+    //    return events;
+    //}
+//
+    //public void setEvents(List<Event> events) {
+    //    this.events = events;
+    //}
 
     public Symbol() {
     }

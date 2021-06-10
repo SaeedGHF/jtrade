@@ -20,22 +20,30 @@ import java.util.Optional;
 @RequestMapping(path = "api")
 public class ApiController {
 
-    @Autowired
     CandlestickService candlestickService;
-    @Autowired
     SimpMessagingTemplate simpMessagingTemplate;
-    @Autowired
     BinanceSpotService binanceSpotService;
-    @Autowired
     SymbolService symbolService;
     SymbolRepository symbolRep;
     CandlestickRepository candlestickRep;
     EventRepository eventRep;
 
-    ApiController(SymbolRepository symbolRep, CandlestickRepository candlestickRep, EventRepository eventRep) {
+    ApiController(
+            SymbolRepository symbolRep,
+            CandlestickRepository candlestickRep,
+            EventRepository eventRep,
+            CandlestickService candlestickService,
+            SimpMessagingTemplate simpMessagingTemplate,
+            BinanceSpotService binanceSpotService,
+            SymbolService symbolService
+    ) {
         this.symbolRep = symbolRep;
         this.candlestickRep = candlestickRep;
         this.eventRep = eventRep;
+        this.candlestickService = candlestickService;
+        this.simpMessagingTemplate = simpMessagingTemplate;
+        this.binanceSpotService = binanceSpotService;
+        this.symbolService = symbolService;
     }
 
     @GetMapping("symbol/{symbol}")
@@ -62,7 +70,7 @@ public class ApiController {
     public void eventsTest(@PathVariable("symbol") int symbol) {
         Event event = new Event();
         event.setPattern("Пробой уровня");
-        Optional<Symbol> s= symbolRep.findById(symbol);
+        Optional<Symbol> s = symbolRep.findById(symbol);
         s.ifPresent(event::setSymbol);
         simpMessagingTemplate.convertAndSend("/events", event);
     }
