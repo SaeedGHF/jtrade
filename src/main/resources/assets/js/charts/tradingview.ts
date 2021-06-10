@@ -1,12 +1,12 @@
-import {createChart, CrosshairMode, isBusinessDay} from 'lightweight-charts';
+import {createChart, CrosshairMode, isBusinessDay, LineStyle} from 'lightweight-charts';
 import "moment/locale/ru";
 import moment = require("moment");
 
 class Chart implements ChartInterface {
     private readonly instance;
-    private readonly lineSeries;
+    private lineSeries;
 
-    constructor(data) {
+    constructor() {
         this.instance = createChart("b-chart", {
             localization: {
                 dateFormat: 'dd.MM.yyyy',
@@ -17,6 +17,40 @@ class Chart implements ChartInterface {
                     return moment.unix(businessDayOrTimestamp).format('LLL');
                 },
             },
+            crosshair: {
+                mode: CrosshairMode.Normal,
+            },
+        });
+
+    }
+
+    public addPriceLine(price: number){
+        const priceLine = this.lineSeries.createPriceLine({
+            price: price,
+            color: 'green',
+            lineWidth: 2,
+            lineStyle: LineStyle.Dashed,
+            axisLabelVisible: true,
+            title: 'P/L 500',
+        });
+
+        //priceLine.applyOptions({
+        //    price: price + 100,
+        //    color: 'red',
+        //    lineWidth: 3,
+        //    lineStyle: LineStyle.Dashed,
+        //    axisLabelVisible: false,
+        //    title: 'P/L 600',
+        //});
+    }
+
+    public setData(data) {
+        if(this.lineSeries){
+            this.instance.removeSeries(this.lineSeries);
+        }
+        this.lineSeries = this.instance.addCandlestickSeries();
+        this.lineSeries.setData(this.convertSeries(data));
+        this.instance.applyOptions({
             timeScale: {
                 rightOffset: 50,
                 barSpacing: 3,
@@ -32,26 +66,12 @@ class Chart implements ChartInterface {
                     return moment.unix(time).format('LT');
                 },
             },
-            crosshair: {
-                mode: CrosshairMode.Normal,
-            },
         });
-        this.lineSeries = this.instance.addCandlestickSeries();
-        this.lineSeries.setData(this.convertSeries(data));
-    }
-
-    public appendData(data) {
-        this.instance.add();
-    }
-
-    public clear() {
-        this.instance.removeSeries(this.lineSeries);
     }
 
     public update(candlestick) {
         this.lineSeries.update(Chart.convertCandlestick(candlestick));
     }
-
 
     private convertSeries(data) {
         if (Array.isArray(data)) {

@@ -36,4 +36,12 @@ public class Event {
     public void setSymbol(Symbol symbol) {
         this.symbol = symbol;
     }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public Long getId() {
+        return id;
+    }
 }

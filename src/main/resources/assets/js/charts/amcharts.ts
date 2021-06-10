@@ -95,6 +95,9 @@ class Amcharts implements ChartInterface{
         series.simplifiedProcessing = true;
         series.tooltipText = "Open: {openValueY.value}\nLow: {lowValueY.value}\nHigh: {highValueY.value}\nClose: {valueY.value}";
     }
+
+    setData(data) {
+    }
 }
 
 let Instance = new Amcharts();

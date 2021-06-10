@@ -1,2 +1,1 @@
-require("underscore")
 require("jquery");

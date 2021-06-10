@@ -60,6 +60,9 @@ class Chart implements ChartInterface{
         return [time, item.open, item.high, item.low, item.close];
     }
 
+    setData(data) {
+    }
+
 }
 
 export default Chart;

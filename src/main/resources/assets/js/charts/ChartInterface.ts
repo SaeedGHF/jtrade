@@ -1,4 +1,4 @@
 interface ChartInterface{
-    appendData(data);
+    setData(data);
     update(candlestick);
 }
