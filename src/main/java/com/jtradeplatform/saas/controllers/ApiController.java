@@ -1,4 +1,4 @@
-package com.jtradeplatform.saas;
+package com.jtradeplatform.saas.controllers;
 
 import com.jtradeplatform.saas.candlestick.Candlestick;
 import com.jtradeplatform.saas.candlestick.CandlestickRepository;

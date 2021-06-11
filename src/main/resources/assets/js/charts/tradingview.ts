@@ -29,7 +29,7 @@ class Chart implements ChartInterface {
             price: price,
             color: 'green',
             lineWidth: 2,
-            lineStyle: LineStyle.Dashed,
+            lineStyle: LineStyle.SparseDotted,
             axisLabelVisible: true,
             title: 'P/L 500',
         });
