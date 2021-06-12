@@ -2,19 +2,20 @@ package com.jtradeplatform.saas.chart;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jtradeplatform.saas.chart.elements.TrendLineType;
+import lombok.Getter;
 import lombok.SneakyThrows;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class ResultContainer {
+
+@Getter
+public class PatternResultContainer {
 
     private final List<TrendLineType> trendLines;
     private final List<String> infoList;
-    private final ObjectMapper objectMapper;
 
-    ResultContainer() {
-        this.objectMapper = new ObjectMapper();
+    PatternResultContainer() {
         this.trendLines = new LinkedList<>();
         this.infoList = new LinkedList<>();
     }
@@ -27,17 +28,13 @@ public class ResultContainer {
         infoList.add(info);
     }
 
-    public List<TrendLineType> getTrendLines() {
-        return trendLines;
-    }
-
-    public List<String> getInfoList() {
-        return infoList;
+    public boolean isEmpty(){
+        return true;
     }
 
     @SneakyThrows
     @Override
     public String toString() {
-        return objectMapper.writeValueAsString(this);
+        return (new ObjectMapper()).writeValueAsString(this);
     }
 }

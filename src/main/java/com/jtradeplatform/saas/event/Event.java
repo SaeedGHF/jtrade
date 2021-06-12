@@ -13,7 +13,8 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(unique = true, nullable = false)
     private Long id;
-    private String pattern;
+    @Column(columnDefinition = "TEXT")
+    private String data;
     @ManyToOne
     @JoinColumn(name = "symbol_id")
     private Symbol symbol;
@@ -21,12 +22,21 @@ public class Event {
     @CreationTimestamp
     private Date createdAt;
 
-    public String getPattern() {
-        return pattern;
+    public Event(){
+
     }
 
-    public void setPattern(String pattern) {
-        this.pattern = pattern;
+    public Event(Symbol symbol, String pattern){
+        this.symbol = symbol;
+        this.data = pattern;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 
     public Symbol getSymbol() {
@@ -43,5 +53,15 @@ public class Event {
 
     public Long getId() {
         return id;
+    }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "id=" + id +
+                ", data='" + data + '\'' +
+                ", symbol=" + symbol +
+                ", createdAt=" + createdAt +
+                '}';
     }
 }

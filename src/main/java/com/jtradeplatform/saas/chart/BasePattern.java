@@ -4,16 +4,16 @@ import com.jtradeplatform.saas.candlestick.Candlestick;
 
 import java.util.List;
 
-public abstract class PatternDefault implements Runnable {
+public abstract class BasePattern implements Runnable {
 
     protected List<Candlestick> candlesticks;
-    protected ResultContainer resultContainer;
+    protected PatternResultContainer resultContainer;
 
     public void setCandlesticks(List<Candlestick> candlesticks) {
         this.candlesticks = candlesticks;
     }
 
-    public void setResultContainer(ResultContainer resultContainer) {
+    public void setResultContainer(PatternResultContainer resultContainer) {
         this.resultContainer = resultContainer;
     }
 }

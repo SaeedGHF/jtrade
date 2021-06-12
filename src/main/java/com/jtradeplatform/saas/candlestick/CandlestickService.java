@@ -22,8 +22,8 @@ public class CandlestickService {
     CandlestickRepository candlestickRepository;
     SymbolRepository symbolRepository;
     BinanceSpotService binanceSpot;
-    Closeable watcher;
     SimpMessagingTemplate webSocket;
+    Closeable watcher;
 
     private static final Map<String, Candlestick> candlestickQueue = new ConcurrentHashMap<>();
 
@@ -52,7 +52,7 @@ public class CandlestickService {
     }
 
     public void updateSymbolChart(Symbol symbol) {
-        int minutes = 10_080;
+        int minutes = 3 * 24 * 60;
         int limit = 1000;
         long to = Instant.now().toEpochMilli();
         Instant fromInstant = Instant.now().minus(minutes, ChronoUnit.MINUTES);
@@ -86,6 +86,9 @@ public class CandlestickService {
     }
 
     public void runWatcher() {
+        if (watcher != null) {
+            throw new RuntimeException("Watcher already exists!");
+        }
         List<Symbol> symbolEntities = symbolRepository.findAll();
         List<String> symbolList = new ArrayList<>();
         Map<String, Integer> symbolMap = new HashMap<>();

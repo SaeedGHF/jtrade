@@ -1,20 +1,13 @@
 package com.jtradeplatform.saas.candlestick;
 
 import com.influxdb.client.*;
-import com.influxdb.client.domain.Query;
 import com.influxdb.client.domain.WritePrecision;
 import com.influxdb.exceptions.InfluxException;
-import com.influxdb.query.FluxRecord;
-import com.influxdb.query.FluxTable;
-import com.influxdb.query.internal.FluxResultMapper;
 import com.jtradeplatform.saas.configs.InfluxdbConfig;
-import com.jtradeplatform.saas.symbol.Symbol;
 import org.springframework.stereotype.Repository;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class CandlestickRepository {
@@ -39,7 +32,7 @@ public class CandlestickRepository {
 
     public List<Candlestick> findAllBySymbol(int symbol) {
         String flux = String.format("from(bucket: \"%s\")\n" +
-                        "  |> range(start: -3d)\n" +
+                        "  |> range(start: -7d)\n" +
                         "  |> pivot(\n" +
                         "    rowKey:[\"_time\"],\n" +
                         "    columnKey: [\"_field\"],\n" +

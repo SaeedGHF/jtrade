@@ -1,8 +1,8 @@
 package com.jtradeplatform.saas.chart.patternsImpl;
 
-import com.jtradeplatform.saas.chart.PatternDefault;
+import com.jtradeplatform.saas.chart.BasePattern;
 
-public class Speed30 extends PatternDefault {
+public class CascadePattern extends BasePattern {
 
     @Override
     public void run() {
