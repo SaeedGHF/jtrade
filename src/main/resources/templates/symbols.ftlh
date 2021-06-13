@@ -12,11 +12,17 @@
                         </div>
                         <div class="text-end ms-auto" id="selected-event-pattern">
                             <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-                                <button type="button" class="btn btn-outline-secondary">Активировать все</button>
-                                <button type="button" class="btn btn-outline-secondary">Деактивировать все</button>
-                                <button type="button" class="btn btn-outline-secondary">Обновить историю (m1 - 3d)
+<#--                                <button type="button" class="btn btn-outline-secondary">-->
+<#--                                    Активировать все-->
+<#--                                </button>-->
+<#--                                <button type="button" class="btn btn-outline-secondary">-->
+<#--                                    Деактивировать все-->
+<#--                                </button>-->
+                                <button type="button" class="btn btn-outline-secondary" id="charts-refresh">
+                                    Обновить историю (m1 - 3d)
                                 </button>
-                                <button type="button" class="btn btn-outline-secondary">Обновить список (Binance)
+                                <button type="button" class="btn btn-outline-secondary" id="symbols-refresh">
+                                    Обновить список (Binance)
                                 </button>
                             </div>
                         </div>
@@ -25,10 +31,11 @@
                         <table class="table table-striped table-hover">
                             <thead>
                             <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Название</th>
-                                <th scope="col">Статус</th>
+                                <th scope="col" width="5%">#</th>
+                                <th scope="col" width="10%">Название</th>
+<#--                                <th scope="col" width="10%">Статус</th>-->
                                 <th scope="col">Дата обновления</th>
+                                <th scope="col">Лог</th>
                                 <th scope="col">Действия</th>
                             </tr>
                             </thead>
@@ -37,9 +44,21 @@
                                 <tr data-id="${symbol.id}">
                                     <th scope="row">${symbol?counter}</th>
                                     <td>${symbol.name}</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+<#--                                    <td>-->
+<#--                                        <select name="" id="" class="select-status form-select form-select-sm">-->
+<#--                                            <option value="0">Выключен</option>-->
+<#--                                            <option value="1">Включен</option>-->
+<#--                                        </select>-->
+<#--                                    </td>-->
+                                    <td>${symbol.updatedAt}</td>
+                                        <td>
+                                            <#if true></#if>
+                                        </td>
+                                    <td>
+                                        <a class="btn btn-sm btn-outline-secondary refresh-history">Обновить историю</a>
+<#--                                        <a class="btn btn-sm btn-outline-secondary">Активировать</a>-->
+<#--                                        <a class="btn btn-sm btn-outline-secondary">Деактивировать</a>-->
+                                    </td>
                                 </tr>
                             <#else >
                                 <tr>
@@ -53,4 +72,6 @@
             </div>
         </div>
     </@c.content>
+
+    <script src="/js/symbols.js"></script>
 </@page>

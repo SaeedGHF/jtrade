@@ -2,6 +2,7 @@ let mix = require('laravel-mix');
 
 
 mix.ts('src/main/resources/assets/js/app.ts', 'js')
+    .ts('src/main/resources/assets/js/symbols.ts', 'js')
     .sass('src/main/resources/assets/scss/app.scss', 'css')
     .sass('src/main/resources/assets/scss/vendor.scss', 'css')
     .version()

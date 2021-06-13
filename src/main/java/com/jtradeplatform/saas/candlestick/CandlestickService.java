@@ -58,16 +58,16 @@ public class CandlestickService {
         Instant fromInstant = Instant.now().minus(minutes, ChronoUnit.MINUTES);
 
         while (true) {
-            List<Candlestick> candlesticks = binanceSpot.getSymbolHistory(symbol, limit, fromInstant.toEpochMilli(), to);
-            candlestickRepository.saveAll(candlesticks);
-            fromInstant = fromInstant.plus(limit, ChronoUnit.MINUTES);
-
-            if (candlesticks.isEmpty()) break;
-
             try {
+                List<Candlestick> candlesticks = binanceSpot.getSymbolHistory(symbol, limit, fromInstant.toEpochMilli(), to);
+                candlestickRepository.saveAll(candlesticks);
+                fromInstant = fromInstant.plus(limit, ChronoUnit.MINUTES);
+
+                if (candlesticks.isEmpty()) break;
+
                 Thread.sleep(100);
-            } catch (InterruptedException e) {
-                System.err.println(e);
+            } catch (Exception e) {
+                System.err.println("Update error (" + symbol.getName() + "): " + e);
                 break;
             }
         }

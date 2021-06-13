@@ -30,7 +30,7 @@ public class ApiController {
     CandlestickRepository candlestickRep;
     EventRepository eventRep;
 
-    @GetMapping("symbol/{symbol}")
+    @GetMapping("symbols/{symbol}")
     public Optional<Symbol> symbol(@PathVariable("symbol") int symbol) {
         return symbolRep.findById(symbol);
     }
@@ -61,7 +61,7 @@ public class ApiController {
         candlestickService.updateAllCharts();
     }
 
-    @PostMapping("/symbol/refresh")
+    @PostMapping("/symbols/refresh")
     public String symbol() {
         symbolService.refreshAll();
         return "faq";

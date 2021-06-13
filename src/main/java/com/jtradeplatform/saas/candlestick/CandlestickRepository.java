@@ -32,7 +32,7 @@ public class CandlestickRepository {
 
     public List<Candlestick> findAllBySymbol(int symbol) {
         String flux = String.format("from(bucket: \"%s\")\n" +
-                        "  |> range(start: -7d)\n" +
+                        "  |> range(start: -3d)\n" +
                         "  |> pivot(\n" +
                         "    rowKey:[\"_time\"],\n" +
                         "    columnKey: [\"_field\"],\n" +

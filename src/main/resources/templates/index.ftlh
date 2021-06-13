@@ -1,8 +1,8 @@
 <#assign title = "JTrade Platform">
 <#include "layout.ftlh">
-<#import "components/content.ftlh" as c>
+<#import "components/content.ftlh" as b>
 <@page>
-    <@c.content>
+    <@b.content>
         <div class="row">
             <div class="col-md-10">
                 <div class="card mb-4 rounded-3 shadow-sm" style="height: 800px">
@@ -30,7 +30,7 @@
                 </div>
             </div>
         </div>
-    </@c.content>
+    </@b.content>
 
     <script id="event-template" type="text/html">
         <% _.each(events, function(item){ %>
