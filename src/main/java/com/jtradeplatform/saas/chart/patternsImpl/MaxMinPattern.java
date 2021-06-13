@@ -6,12 +6,12 @@ import com.jtradeplatform.saas.chart.elements.TrendLineType;
 
 public class MaxMinPattern extends BasePattern {
 
-    private final double MIN_PERCENT_DISTANCE = 0.8;
+    private final double MIN_PERCENT_DISTANCE = 10.8;
 
     @Override
     public void run() {
 
-        if(this.candlesticks.size() < 1000){
+        if (this.candlesticks.size() < 500) {
             return;
         }
 
@@ -21,7 +21,7 @@ public class MaxMinPattern extends BasePattern {
 
         for (Candlestick candlestick : this.candlesticks) {
             maxPrice = candlestick.getHigh() > maxPrice ? candlestick.getHigh() : maxPrice;
-            minPrice = candlestick.getLow() < minPrice ? candlestick.getLow() : minPrice;
+            minPrice = candlestick.getLow() < minPrice || minPrice == 0 ? candlestick.getLow() : minPrice;
         }
 
         if (maxPrice > 0 && this.checkDistance(currentPrice, maxPrice)) {

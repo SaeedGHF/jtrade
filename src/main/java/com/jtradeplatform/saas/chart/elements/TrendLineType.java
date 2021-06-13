@@ -1,8 +1,10 @@
 package com.jtradeplatform.saas.chart.elements;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum TrendLineType {
 
     SUPPORT_LINE("Поддержка", "green", "Solid"),

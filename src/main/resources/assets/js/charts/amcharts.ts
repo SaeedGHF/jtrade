@@ -96,7 +96,7 @@ class Amcharts implements ChartInterface{
         series.tooltipText = "Open: {openValueY.value}\nLow: {lowValueY.value}\nHigh: {highValueY.value}\nClose: {valueY.value}";
     }
 
-    setData(data) {
+    setData(data, precision) {
     }
 }
 

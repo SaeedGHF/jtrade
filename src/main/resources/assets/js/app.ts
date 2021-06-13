@@ -16,6 +16,7 @@ class App {
     private chart = new Chart();
 
     constructor() {
+        this.stompClient.debug = ()=>{}
         this.connect();
         this.enableHandlers();
     }
@@ -32,7 +33,7 @@ class App {
 
         $('#refresh-symbol-history').on('click', (e) => {
             e.preventDefault();
-            if(!this.selectedEvent){
+            if (!this.selectedEvent) {
                 alert("Не выбран символ")
                 return;
             }
@@ -48,10 +49,6 @@ class App {
         });
     }
 
-    private priceLineTest(price: number){
-        this.chart.addPriceLine(price);
-    }
-
     private selectEvent(newSelectedEvent) {
         this.selectedEvent = newSelectedEvent;
         this.subscribe();
@@ -60,6 +57,7 @@ class App {
 
     private addEvent(event) {
         this.eventList.push(event);
+        event.data = JSON.parse(event.data);
 
         this.eventList = _.map(_.indexBy(this.eventList, 'id'), function (obj) {
             return obj
@@ -130,12 +128,19 @@ class App {
             url: "/api/chart/" + this.selectedEvent.symbol.id,
             success: (data) => {
                 this.chart.setData(data);
+                this.selectedEvent.data.trendLines.forEach((item) => {
+                    this.chart.addPriceLine(item);
+                });
                 this.chartSubscription = this.stompClient.subscribe(chartChannel, (message) => {
                     this.chart.update(JSON.parse(message.body));
                 });
             }
         });
     }
+
+    //public addTestLine(price){
+    //    this.chart.addPriceLine(price);
+    //}
 
     private subscribeTradeEvents() {
         $.ajax({

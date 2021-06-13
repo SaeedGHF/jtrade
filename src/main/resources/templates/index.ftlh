@@ -9,7 +9,7 @@
                     <div class="card-header py-3 align-content-between d-flex">
                         <div>
                             <h4 class="my-0 fw-normal" id="selected-event-symbol">
-                                <i>Уведомление не выбрано</i>
+                                <i>Событие не выбрано</i>
                             </h4>
                         </div>
                         <div class="text-end ms-auto" id="selected-event-pattern">...</div>
@@ -22,7 +22,7 @@
             <div class="col-md-2">
                 <div class="card mb-4 rounded-3 shadow-sm" style="height: 800px">
                     <div class="card-header py-3">
-                        <h4 class="my-0 fw-normal">Уведомления</h4>
+                        <h4 class="my-0 fw-normal">События</h4>
                     </div>
                     <div class="card-body" id="events" style="overflow-y: scroll">
 

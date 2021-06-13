@@ -28,8 +28,8 @@ public class PatternResultContainer {
         infoList.add(info);
     }
 
-    public boolean isEmpty(){
-        return true;
+    public boolean isEmpty() {
+        return this.trendLines.isEmpty() && this.infoList.isEmpty();
     }
 
     @SneakyThrows

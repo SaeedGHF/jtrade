@@ -24,33 +24,44 @@ class Chart implements ChartInterface {
 
     }
 
-    public addPriceLine(price: number){
-        const priceLine = this.lineSeries.createPriceLine({
-            price: price,
-            color: 'green',
+    public addPriceLine(item) {
+        this.lineSeries.createPriceLine({
+            price: +item.price,
+            color: item.color,
             lineWidth: 2,
-            lineStyle: LineStyle.SparseDotted,
+            lineStyle: +LineStyle[item.style],
             axisLabelVisible: true,
-            title: 'P/L 500',
+            title: item.name
         });
-
-        //priceLine.applyOptions({
-        //    price: price + 100,
-        //    color: 'red',
-        //    lineWidth: 3,
-        //    lineStyle: LineStyle.Dashed,
-        //    axisLabelVisible: false,
-        //    title: 'P/L 600',
-        //});
     }
 
-    public setData(data) {
-        if(this.lineSeries){
+    public setData(data, precision = 5) {
+        if (this.lineSeries) {
             this.instance.removeSeries(this.lineSeries);
         }
         this.lineSeries = this.instance.addCandlestickSeries();
         this.lineSeries.setData(this.convertSeries(data));
         this.instance.applyOptions({
+            priceFormat: {
+                type: 'custom',
+                minMove: '0.000001',
+                formatter: (price) => {
+                    if (price < 0.000001) return parseFloat(price).toPrecision(8)
+                    else if (price >= 0.000001 && price < 1) return parseFloat(price).toPrecision(6)
+                    else return parseFloat(price).toPrecision(6)
+                }
+            },
+            priceScale: {
+                autoScale: true
+            },
+            localization: {
+                locale: 'en-US',
+                priceFormatter: (price) => {
+                    if (price < 0.000001) return parseFloat(price).toPrecision(8)
+                    else if (price >= 0.000001 && price < 1) return parseFloat(price).toPrecision(6)
+                    else return parseFloat(price).toPrecision(6)
+                }
+            },
             timeScale: {
                 rightOffset: 50,
                 barSpacing: 3,

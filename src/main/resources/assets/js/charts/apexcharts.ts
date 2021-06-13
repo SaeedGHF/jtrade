@@ -33,7 +33,7 @@ class Chart implements ChartInterface{
         this.instance.render()
     }
 
-    public appendData(data) {
+    public appendData(data, precision) {
         this.instance.appendData(this.convertSeries(data));
     }
     public update(data){
@@ -60,7 +60,7 @@ class Chart implements ChartInterface{
         return [time, item.open, item.high, item.low, item.close];
     }
 
-    setData(data) {
+    setData(data, precision) {
     }
 
 }
