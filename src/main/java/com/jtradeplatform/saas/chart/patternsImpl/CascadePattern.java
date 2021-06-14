@@ -8,11 +8,12 @@ import java.util.*;
 
 public class CascadePattern extends BasePattern {
 
-    private final double MIN_ACTIVATE_DISTANCE = 10;
+    private final double MIN_ACTIVATE_DISTANCE = 0.75d;
     private final int MIN_HISTORY_SIZE = 500;
-    private final int MAX_PRICE_POINTS = 30;
+    private final int MAX_PRICE_POINTS = 50;
+    private final int MAX_DISPLAY_LINES = 12;
     private final int GRAY_AREA = 20;
-    private final double MIN_CHANGE_PERCENT = 1;
+    private final double MIN_CHANGE_PERCENT = 2.5;
     private final String TYPE_TOP = "top";
     private final String TYPE_BOTTOM = "bottom";
     private final ArrayDeque<PricePoint> pricePoints = new ArrayDeque<>(MAX_PRICE_POINTS);
@@ -46,19 +47,18 @@ public class CascadePattern extends BasePattern {
 
             // find first type
             if (pricePoints.isEmpty()) {
-                if (this.calcDiffPercent(currentPrice, c.getHigh()) < -0.5 && c.getHigh() > greyMaxPrice) {
+                if (this.calcDiffPercent(currentPrice, c.getHigh()) < -MIN_ACTIVATE_DISTANCE && c.getHigh() > greyMaxPrice) {
                     pricePoints.add(new PricePoint(c.getHigh(), TYPE_TOP));
                 }
-                if (this.calcDiffPercent(currentPrice, c.getLow()) > 0.5 && c.getLow() < greyMinPrice) {
+                if (this.calcDiffPercent(currentPrice, c.getLow()) > MIN_ACTIVATE_DISTANCE && c.getLow() < greyMinPrice) {
                     pricePoints.add(new PricePoint(c.getLow(), TYPE_BOTTOM));
                 }
-
-                // check event rule
-                if (!pricePoints.isEmpty() && !checkActivateDistance(currentPrice, pricePoints.getFirst().price)) {
-                    return;
-                }
-
                 continue;
+            }
+
+            // check event rule
+            if (pricePoints.size() > 1 && !checkActivateDistance(currentPrice, pricePoints.getFirst().price)) {
+                return;
             }
 
             if (pricePoints.size() > MAX_PRICE_POINTS) {
@@ -92,8 +92,12 @@ public class CascadePattern extends BasePattern {
 
     private void convertPricePoints() {
         double lastTopPrice = 0, lastBottomPrice = 0;
+        int countLines = 0;
 
         for (PricePoint p : pricePoints) {
+            if (countLines > MAX_DISPLAY_LINES) {
+                break;
+            }
             if (p.type.equals(TYPE_TOP)) {
                 if ((lastTopPrice == 0 || p.price > lastTopPrice) && p.price > greyMaxPrice) {
                     addResistanceLine(p.price);
@@ -106,6 +110,7 @@ public class CascadePattern extends BasePattern {
                     lastBottomPrice = p.price;
                 }
             }
+            countLines++;
         }
     }
 
@@ -131,6 +136,10 @@ public class CascadePattern extends BasePattern {
 
     private void addLine(double price, LineType line) {
         this.resultContainer.addLine(price, line);
+    }
+
+    public int getMAX_DISPLAY_LINES() {
+        return MAX_DISPLAY_LINES;
     }
 
     public double getMIN_ACTIVATE_DISTANCE() {
