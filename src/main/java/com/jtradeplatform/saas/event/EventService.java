@@ -16,6 +16,7 @@ import javax.persistence.TemporalType;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -30,17 +31,20 @@ public class EventService {
     SimpMessagingTemplate simpMessagingTemplate;
     EntityManager entityManager;
 
+    /**
+     * find patterns in reversed candlesticks
+     */
     public void findPatternsAndSend() {
 
         List<Symbol> symbolList = symbolRepository.findAll();
         patternFinderContext.setPatternClasses(Arrays.asList(
-                //CascadePattern.class,
                 //Speed30Pattern.class,
-                MaxMinPattern.class
+                CascadePattern.class
         ));
 
         for (Symbol symbol : symbolList) {
             List<Candlestick> candlestickList = candlestickRepository.findAllBySymbol(symbol.getId());
+            Collections.reverse(candlestickList);
             PatternResultContainer resultContainer = patternFinderContext.find(candlestickList);
             if (resultContainer.isEmpty()) {
                 continue;

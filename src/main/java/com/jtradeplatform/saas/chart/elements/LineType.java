@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-public enum TrendLineType {
+public enum LineType {
 
     SUPPORT_LINE("Поддержка", "green", "Solid"),
     RESISTANCE_LINE("Сопротивление", "red", "Solid"),
@@ -18,7 +18,6 @@ public enum TrendLineType {
     private final String name;
     private final String color;
     private final String style;
-    private double price;
 
     public String getName() {
         return name;
@@ -32,17 +31,9 @@ public enum TrendLineType {
         return style;
     }
 
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    TrendLineType(String name, String color, String style) {
+    LineType(String name, String color, String style) {
         this.name = name;
         this.color = color;
         this.style = style;

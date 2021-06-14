@@ -25,6 +25,7 @@ class Chart implements ChartInterface {
     }
 
     public addPriceLine(item) {
+        console.log(item)
         this.lineSeries.createPriceLine({
             price: +item.price,
             color: item.color,

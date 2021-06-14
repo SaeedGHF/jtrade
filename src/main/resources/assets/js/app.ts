@@ -16,7 +16,8 @@ class App {
     private chart = new Chart();
 
     constructor() {
-        this.stompClient.debug = ()=>{}
+        this.stompClient.debug = () => {
+        }
         this.connect();
         this.enableHandlers();
     }
@@ -128,19 +129,20 @@ class App {
             url: "/api/chart/" + this.selectedEvent.symbol.id,
             success: (data) => {
                 this.chart.setData(data);
-                this.selectedEvent.data.trendLines.forEach((item) => {
-                    this.chart.addPriceLine(item);
-                });
+                let eventData = this.selectedEvent.data;
+                if ('lines' in eventData) {
+                    _.each(eventData.lines, (value, key) => {
+                        value.price = key;
+                        this.chart.addPriceLine(value);
+                    });
+                }
+
                 this.chartSubscription = this.stompClient.subscribe(chartChannel, (message) => {
                     this.chart.update(JSON.parse(message.body));
                 });
             }
         });
     }
-
-    //public addTestLine(price){
-    //    this.chart.addPriceLine(price);
-    //}
 
     private subscribeTradeEvents() {
         $.ajax({

@@ -32,10 +32,10 @@ public class ScheduleConfig {
         candlestickService.runQueue();
     }
 
-    //@Scheduled(cron = "*/20 * * * * *")
-    //public void runPatternFinder() {
-    //    System.out.println("RUN runPatternFinder at " + Instant.now().toString());
-    //    eventService.findPatternsAndSend();
-    //    System.out.println("STOP runPatternFinder at " + Instant.now().toString());
-    //}
+    @Scheduled(cron = "*/20 * * * * *")
+    public void runPatternFinder() {
+        System.out.println("RUN runPatternFinder at " + Instant.now().toString());
+        eventService.findPatternsAndSend();
+        System.out.println("STOP runPatternFinder at " + Instant.now().toString());
+    }
 }
