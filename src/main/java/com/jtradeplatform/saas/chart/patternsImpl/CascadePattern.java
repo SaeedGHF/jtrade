@@ -95,17 +95,16 @@ public class CascadePattern extends BasePattern {
 
         for (PricePoint p : pricePoints) {
             if (p.type.equals(TYPE_TOP)) {
-                if (lastTopPrice == 0 || p.price > lastTopPrice && p.price > greyMaxPrice) {
+                if ((lastTopPrice == 0 || p.price > lastTopPrice) && p.price > greyMaxPrice) {
                     addResistanceLine(p.price);
+                    lastTopPrice = p.price;
                 }
-                lastTopPrice = p.price;
             }
             if (p.type.equals(TYPE_BOTTOM)) {
                 if ((lastBottomPrice == 0 || p.price < lastBottomPrice) && p.price < greyMinPrice) {
                     addSupportLine(p.price);
+                    lastBottomPrice = p.price;
                 }
-
-                lastBottomPrice = p.price;
             }
         }
     }
