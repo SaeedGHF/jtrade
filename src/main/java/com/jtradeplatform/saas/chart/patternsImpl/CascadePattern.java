@@ -8,12 +8,12 @@ import java.util.*;
 
 public class CascadePattern extends BasePattern {
 
-    private final double MIN_ACTIVATE_DISTANCE = 0.75d;
+    private final double MAX_ACTIVATE_DISTANCE = 0.5d;
     private final int MIN_HISTORY_SIZE = 500;
-    private final int MAX_PRICE_POINTS = 50;
+    private final int MAX_PRICE_POINTS = 200;
     private final int MAX_DISPLAY_LINES = 12;
-    private final int GRAY_AREA = 20;
-    private final double MIN_CHANGE_PERCENT = 2.5;
+    private final int GRAY_AREA = 15;
+    private final double MIN_CHANGE_PERCENT = 1.2;
     private final String TYPE_TOP = "top";
     private final String TYPE_BOTTOM = "bottom";
     private final ArrayDeque<PricePoint> pricePoints = new ArrayDeque<>(MAX_PRICE_POINTS);
@@ -47,17 +47,17 @@ public class CascadePattern extends BasePattern {
 
             // find first type
             if (pricePoints.isEmpty()) {
-                if (this.calcDiffPercent(currentPrice, c.getHigh()) < -MIN_ACTIVATE_DISTANCE && c.getHigh() > greyMaxPrice) {
+                if (this.calcDiffPercent(currentPrice, c.getHigh()) < -0.25 && c.getHigh() > greyMaxPrice) {
                     pricePoints.add(new PricePoint(c.getHigh(), TYPE_TOP));
                 }
-                if (this.calcDiffPercent(currentPrice, c.getLow()) > MIN_ACTIVATE_DISTANCE && c.getLow() < greyMinPrice) {
+                if (this.calcDiffPercent(currentPrice, c.getLow()) > 0.25 && c.getLow() < greyMinPrice) {
                     pricePoints.add(new PricePoint(c.getLow(), TYPE_BOTTOM));
                 }
                 continue;
             }
 
             // check event rule
-            if (pricePoints.size() > 1 && !checkActivateDistance(currentPrice, pricePoints.getFirst().price)) {
+            if (pricePoints.size() == 2 && !checkActivateDistance(currentPrice, pricePoints.getFirst().price)) {
                 return;
             }
 
@@ -87,6 +87,7 @@ public class CascadePattern extends BasePattern {
                 pricePoints.add(new PricePoint(c.getLow(), TYPE_BOTTOM));
             }
         }
+
         this.convertPricePoints();
     }
 
@@ -95,22 +96,23 @@ public class CascadePattern extends BasePattern {
         int countLines = 0;
 
         for (PricePoint p : pricePoints) {
-            if (countLines > MAX_DISPLAY_LINES) {
+            if (countLines >= MAX_DISPLAY_LINES) {
                 break;
             }
             if (p.type.equals(TYPE_TOP)) {
                 if ((lastTopPrice == 0 || p.price > lastTopPrice) && p.price > greyMaxPrice) {
                     addResistanceLine(p.price);
                     lastTopPrice = p.price;
+                    countLines++;
                 }
             }
             if (p.type.equals(TYPE_BOTTOM)) {
                 if ((lastBottomPrice == 0 || p.price < lastBottomPrice) && p.price < greyMinPrice) {
                     addSupportLine(p.price);
                     lastBottomPrice = p.price;
+                    countLines++;
                 }
             }
-            countLines++;
         }
     }
 
@@ -119,7 +121,7 @@ public class CascadePattern extends BasePattern {
             return false;
         }
         double percent = Math.abs(this.calcDiffPercent(currentPrice, historicalPrice));
-        return percent <= this.MIN_ACTIVATE_DISTANCE;
+        return percent <= this.MAX_ACTIVATE_DISTANCE;
     }
 
     private double calcDiffPercent(double targetPrice, double anotherPrice) {
@@ -142,8 +144,8 @@ public class CascadePattern extends BasePattern {
         return MAX_DISPLAY_LINES;
     }
 
-    public double getMIN_ACTIVATE_DISTANCE() {
-        return MIN_ACTIVATE_DISTANCE;
+    public double getMAX_ACTIVATE_DISTANCE() {
+        return MAX_ACTIVATE_DISTANCE;
     }
 
     public int getMIN_HISTORY_SIZE() {

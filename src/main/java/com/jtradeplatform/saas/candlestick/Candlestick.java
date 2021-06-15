@@ -8,6 +8,8 @@ import java.time.Instant;
 @Measurement(name = "candlestick")
 public class Candlestick {
 
+    private static final String MEASUREMENT_NAME = "candlestick";
+
     @Column(timestamp = true)
     Instant time;
 
@@ -18,18 +20,15 @@ public class Candlestick {
     String symbol;
 
     @Column
-    Double open;
+    String value;
 
-    @Column
-    Double high;
+    //
+    private Double open;
+    private Double high;
+    private Double low;
+    private Double close;
 
-    @Column
-    Double low;
-
-    @Column
-    Double close;
-
-    public Candlestick(){
+    public Candlestick() {
 
     }
 
@@ -41,62 +40,55 @@ public class Candlestick {
         this.high = high;
         this.low = low;
         this.close = close;
+        this.convertToValue();
+    }
+
+    private void convertToValue() {
+        this.value = open + ":" + high + ":" + low + ":" + close;
+    }
+
+    public void parseValue() {
+        String[] list = this.value.split(":");
+        if (list.length != 4) {
+            throw new RuntimeException("Failed to check candlestick list length");
+        }
+
+        open = Double.parseDouble(list[0]);
+        high = Double.parseDouble(list[1]);
+        low = Double.parseDouble(list[2]);
+        close = Double.parseDouble(list[3]);
+    }
+
+    public static String getMeasureName() {
+        return MEASUREMENT_NAME;
     }
 
     public Instant getTime() {
         return time;
     }
 
-    public void setTime(Instant time) {
-        this.time = time;
-    }
-
     public String getPeriod() {
         return period;
-    }
-
-    public void setPeriod(String period) {
-        this.period = period;
     }
 
     public String getSymbol() {
         return symbol;
     }
 
-    public void setSymbol(String symbol) {
-        this.symbol = symbol;
-    }
-
     public Double getOpen() {
         return open;
-    }
-
-    public void setOpen(Double open) {
-        this.open = open;
     }
 
     public Double getHigh() {
         return high;
     }
 
-    public void setHigh(Double high) {
-        this.high = high;
-    }
-
     public Double getLow() {
         return low;
     }
 
-    public void setLow(Double low) {
-        this.low = low;
-    }
-
     public Double getClose() {
         return close;
-    }
-
-    public void setClose(Double close) {
-        this.close = close;
     }
 
     @Override

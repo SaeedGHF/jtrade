@@ -43,9 +43,11 @@ public class EventService {
         ));
 
         for (Symbol symbol : symbolList) {
+
             List<Candlestick> candlestickList = candlestickRepository.findAllBySymbol(symbol.getId());
             Collections.reverse(candlestickList);
             PatternResultContainer resultContainer = patternFinderContext.find(candlestickList);
+
             if (resultContainer.isEmpty()) {
                 continue;
             }

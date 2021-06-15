@@ -12,13 +12,13 @@ import java.util.List;
 @Repository
 public class CandlestickRepository {
 
-    public final String MEASUREMENT_NAME = "candlestick";
-
     private final InfluxDBClient client;
     private final InfluxdbConfig influxdbConfig;
+    private final QueryApi queryApi;
 
     CandlestickRepository(InfluxdbConfig config) {
         this.client = config.getClient();
+        this.queryApi = client.getQueryApi();
         this.influxdbConfig = config;
     }
 
@@ -33,24 +33,22 @@ public class CandlestickRepository {
     public List<Candlestick> findAllBySymbol(int symbol) {
         String flux = String.format("from(bucket: \"%s\")\n" +
                         "  |> range(start: -3d)\n" +
-                        "  |> pivot(\n" +
-                        "    rowKey:[\"_time\"],\n" +
-                        "    columnKey: [\"_field\"],\n" +
-                        "    valueColumn: \"_value\"\n" +
-                        "  )" +
                         "  |> filter(fn: (r) => r[\"_measurement\"] == \"%s\" and r[\"symbol\"] == \"%s\")\n",
                 influxdbConfig.getBucket(),
-                MEASUREMENT_NAME,
+                Candlestick.getMeasureName(),
                 symbol
         );
 
-        QueryApi queryApi = client.getQueryApi();
-        return queryApi.query(flux, Candlestick.class);
+        List<Candlestick> result = queryApi.query(flux, Candlestick.class);
+        for (Candlestick c : result) {
+            c.parseValue();
+        }
+        return result;
     }
 
     public void saveAll(List<Candlestick> list) {
         try (WriteApi writeApi = client.getWriteApi()) {
-            writeApi.writeMeasurements(WritePrecision.MS, list);
+            writeApi.writeMeasurements(WritePrecision.S, list);
         }
     }
 

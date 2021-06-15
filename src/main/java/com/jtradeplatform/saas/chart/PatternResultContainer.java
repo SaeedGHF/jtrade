@@ -5,29 +5,27 @@ import com.jtradeplatform.saas.chart.elements.LineType;
 import lombok.Getter;
 import lombok.SneakyThrows;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 @Getter
 public class PatternResultContainer {
 
     private final Map<Double, LineType> lines;
-    private final List<String> infoList;
+    private final Map<String, String> infoList;
 
     PatternResultContainer() {
-        this.lines = new HashMap<>();
-        this.infoList = new LinkedList<>();
+        this.lines = new ConcurrentHashMap<>();
+        this.infoList = new ConcurrentHashMap<>();
     }
 
     public synchronized void addLine(Double price, LineType lineType) {
         lines.put(price, lineType);
     }
 
-    public synchronized void addInfo(String info) {
-        infoList.add(info);
+    public synchronized void addInfo(String key, String info) {
+        infoList.put(key, info);
     }
 
     public boolean isEmpty() {

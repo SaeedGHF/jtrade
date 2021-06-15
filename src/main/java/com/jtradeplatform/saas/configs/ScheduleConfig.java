@@ -34,8 +34,10 @@ public class ScheduleConfig {
 
     @Scheduled(cron = "*/20 * * * * *")
     public void runPatternFinder() {
+        long startTime = System.currentTimeMillis();
         System.out.println("RUN runPatternFinder at " + Instant.now().toString());
         eventService.findPatternsAndSend();
-        System.out.println("STOP runPatternFinder at " + Instant.now().toString());
+        long endTime = System.currentTimeMillis();
+        System.out.println("STOP runPatternFinder execution time: " + (endTime-startTime) + "ms");
     }
 }
