@@ -1,8 +1,15 @@
 package com.jtradeplatform.saas.candlestick;
 
+import com.jtradeplatform.saas.chart.PatternFinderContext;
+import com.jtradeplatform.saas.chart.PatternResultContainer;
+import com.jtradeplatform.saas.chart.patternsImpl.CascadePattern;
+import com.jtradeplatform.saas.chart.patternsImpl.Speed30Pattern;
+import com.jtradeplatform.saas.event.Event;
+import com.jtradeplatform.saas.event.EventService;
 import com.jtradeplatform.saas.services.BinanceSpotService;
 import com.jtradeplatform.saas.symbol.Symbol;
 import com.jtradeplatform.saas.symbol.SymbolRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -10,11 +17,8 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
+import java.util.concurrent.*;
 
 @Service
 public class CandlestickService {
@@ -22,7 +26,9 @@ public class CandlestickService {
     CandlestickRepository candlestickRepository;
     SymbolRepository symbolRepository;
     BinanceSpotService binanceSpot;
+    PatternFinderContext patternFinderContext;
     SimpMessagingTemplate webSocket;
+    EventService eventService;
     Closeable watcher;
 
     private static final Map<String, Candlestick> candlestickQueue = new ConcurrentHashMap<>();
@@ -31,12 +37,16 @@ public class CandlestickService {
             CandlestickRepository candlestickRepository,
             SymbolRepository symbolRepository,
             BinanceSpotService binanceSpot,
-            SimpMessagingTemplate webSocket
+            SimpMessagingTemplate webSocket,
+            PatternFinderContext patternFinderContext,
+            EventService eventService
     ) {
         this.candlestickRepository = candlestickRepository;
         this.symbolRepository = symbolRepository;
         this.binanceSpot = binanceSpot;
         this.webSocket = webSocket;
+        this.eventService = eventService;
+        this.patternFinderContext = patternFinderContext;
         this.runWatcher();
     }
 
@@ -48,6 +58,51 @@ public class CandlestickService {
         List<Symbol> symbolEntities = symbolRepository.findAll();
         for (Symbol symbol : symbolEntities) {
             this.updateSymbolChart(symbol);
+        }
+    }
+
+
+    /**
+     * find patterns in reversed candlesticks
+     */
+    public void findPatternsAndSend() {
+
+        List<Symbol> symbolList = symbolRepository.findAll();
+        patternFinderContext.setPatternClasses(Arrays.asList(
+                Speed30Pattern.class,
+                CascadePattern.class
+        ));
+
+        int maxThreadCount = Runtime.getRuntime().availableProcessors();
+        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(maxThreadCount);
+        Collection<Future<?>> futures = new LinkedList<Future<?>>();
+        //
+        for (Symbol symbol : symbolList) {
+            futures.add(
+                    executor.submit(() -> {
+                        List<Candlestick> candlestickList = candlestickRepository.findAllBySymbol(symbol.getId());
+                        Collections.reverse(candlestickList);
+
+                        PatternResultContainer resultContainer = patternFinderContext.find(candlestickList);
+
+                        if (resultContainer.isEmpty()) {
+                            return;
+                        }
+
+                        Event event = new Event(symbol, resultContainer.toString());
+                        eventService.saveAndSend(event, "/events");
+                    })
+            );
+        }
+
+        for (Future<?> future : futures) {
+            try {
+                future.get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
         }
     }
 

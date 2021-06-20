@@ -1,0 +1,19 @@
+overload:
+  enabled: true
+  package: yandextank.plugins.DataUploader
+  token_file: "token.txt"
+phantom:
+  address: 192.168.88.241:8080
+  ssl: true
+  load_profile:
+    load_type: rps
+    schedule: line(1, 300, 3m)
+  uris:
+    - /symbols
+telegraf:
+  enabled: false
+uploader:
+  enabled: true
+  operator: stapik92
+  package: yandextank.plugins.DataUploader
+  token_file: /var/loadtest/token.txt

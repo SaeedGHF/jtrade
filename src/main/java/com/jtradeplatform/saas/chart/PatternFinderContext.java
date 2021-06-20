@@ -17,27 +17,15 @@ public class PatternFinderContext {
 
     public PatternResultContainer find(List<Candlestick> candlestickList) {
         PatternResultContainer resultContainer = new PatternResultContainer();
-        Map<String, Thread> threadList = new HashMap<>();
 
         for (val ptClass : this.patternClasses) {
             try {
                 BasePattern pt = ptClass.newInstance();
                 pt.setCandlesticks(candlestickList);
                 pt.setResultContainer(resultContainer);
-                Thread patternThread = new Thread(pt);
-                patternThread.setName(ptClass.toString());
-                patternThread.start();
-                threadList.put(patternThread.getName(), patternThread);
+                pt.run();
             } catch (InstantiationException | IllegalAccessException e) {
                 System.err.println("Pattern error" + e);
-            }
-        }
-
-        for (Map.Entry<String, Thread> entry : threadList.entrySet()) {
-            try {
-                entry.getValue().join();
-            } catch (InterruptedException e) {
-                System.err.println("Thread error: " + e);
             }
         }
         return resultContainer;

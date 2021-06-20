@@ -13,6 +13,8 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(unique = true, nullable = false)
     private Long id;
+    @Column
+    private String type;
     @Column(columnDefinition = "TEXT")
     private String data;
     @ManyToOne
@@ -63,5 +65,9 @@ public class Event {
                 ", symbol=" + symbol +
                 ", createdAt=" + createdAt +
                 '}';
+    }
+
+    public String getType() {
+        return type;
     }
 }

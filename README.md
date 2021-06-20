@@ -7,3 +7,12 @@
 * secret key 
   
   `zZ1bhregHjcRkQ0nkZYbeOFR6PKOam3UpEJ6CYgCgED4jku2PdfUanxXk2jnVXQb`
+
+
+# Delete after deploy
+* Binance api keys
+* Yandex-tank token
+
+# Yandex Tank
+
+docker run -v $(pwd)/docker/ya-tank:/var/loadtest -v $HOME/.ssh:/root/.ssh -it direvius/yandex-tank

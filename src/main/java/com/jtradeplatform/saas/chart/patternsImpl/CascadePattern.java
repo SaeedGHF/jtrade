@@ -2,6 +2,7 @@ package com.jtradeplatform.saas.chart.patternsImpl;
 
 import com.jtradeplatform.saas.candlestick.Candlestick;
 import com.jtradeplatform.saas.chart.BasePattern;
+import com.jtradeplatform.saas.chart.PriceHelper;
 import com.jtradeplatform.saas.chart.elements.LineType;
 
 import java.util.*;
@@ -47,10 +48,10 @@ public class CascadePattern extends BasePattern {
 
             // find first type
             if (pricePoints.isEmpty()) {
-                if (this.calcDiffPercent(currentPrice, c.getHigh()) < -0.25 && c.getHigh() > greyMaxPrice) {
+                if (PriceHelper.calcDiffPercent(currentPrice, c.getHigh()) < -0.25 && c.getHigh() > greyMaxPrice) {
                     pricePoints.add(new PricePoint(c.getHigh(), TYPE_TOP));
                 }
-                if (this.calcDiffPercent(currentPrice, c.getLow()) > 0.25 && c.getLow() < greyMinPrice) {
+                if (PriceHelper.calcDiffPercent(currentPrice, c.getLow()) > 0.25 && c.getLow() < greyMinPrice) {
                     pricePoints.add(new PricePoint(c.getLow(), TYPE_BOTTOM));
                 }
                 continue;
@@ -80,10 +81,10 @@ public class CascadePattern extends BasePattern {
             }
 
             // if type exists, check change type and update step
-            if (lastPricePoint.type.equals(TYPE_BOTTOM) && this.calcDiffPercent(lastPricePoint.price, c.getHigh()) < -MIN_CHANGE_PERCENT) {
+            if (lastPricePoint.type.equals(TYPE_BOTTOM) && PriceHelper.calcDiffPercent(lastPricePoint.price, c.getHigh()) < -MIN_CHANGE_PERCENT) {
                 pricePoints.add(new PricePoint(c.getHigh(), TYPE_TOP));
             }
-            if (lastPricePoint.type.equals(TYPE_TOP) && this.calcDiffPercent(lastPricePoint.price, c.getLow()) > MIN_CHANGE_PERCENT) {
+            if (lastPricePoint.type.equals(TYPE_TOP) && PriceHelper.calcDiffPercent(lastPricePoint.price, c.getLow()) > MIN_CHANGE_PERCENT) {
                 pricePoints.add(new PricePoint(c.getLow(), TYPE_BOTTOM));
             }
         }
@@ -116,16 +117,12 @@ public class CascadePattern extends BasePattern {
         }
     }
 
-    private boolean checkActivateDistance(double currentPrice, double historicalPrice) {
-        if (currentPrice == historicalPrice) {
+    private boolean checkActivateDistance(double targetPrice, double anotherPrice) {
+        if (targetPrice == anotherPrice) {
             return false;
         }
-        double percent = Math.abs(this.calcDiffPercent(currentPrice, historicalPrice));
+        double percent = Math.abs(PriceHelper.calcDiffPercent(targetPrice, anotherPrice));
         return percent <= this.MAX_ACTIVATE_DISTANCE;
-    }
-
-    private double calcDiffPercent(double targetPrice, double anotherPrice) {
-        return (targetPrice - anotherPrice) / targetPrice * 100;
     }
 
     private void addResistanceLine(double price) {

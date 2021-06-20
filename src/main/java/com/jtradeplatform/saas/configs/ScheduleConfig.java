@@ -1,7 +1,6 @@
 package com.jtradeplatform.saas.configs;
 
 import com.jtradeplatform.saas.candlestick.CandlestickService;
-import com.jtradeplatform.saas.event.EventService;
 import com.jtradeplatform.saas.symbol.SymbolService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +19,6 @@ public class ScheduleConfig {
 
     SymbolService symbolService;
     CandlestickService candlestickService;
-    EventService eventService;
 
     @Scheduled(cron = "0 0 6 * * *")
     public void refreshSymbolList() {
@@ -32,11 +30,11 @@ public class ScheduleConfig {
         candlestickService.runQueue();
     }
 
-    @Scheduled(cron = "*/20 * * * * *")
+    @Scheduled(cron = "*/60 * * * * *")
     public void runPatternFinder() {
         long startTime = System.currentTimeMillis();
         System.out.println("RUN runPatternFinder at " + Instant.now().toString());
-        eventService.findPatternsAndSend();
+        candlestickService.findPatternsAndSend();
         long endTime = System.currentTimeMillis();
         System.out.println("STOP runPatternFinder execution time: " + (endTime-startTime) + "ms");
     }

@@ -15,8 +15,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.TemporalType;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -26,36 +24,9 @@ public class EventService {
 
     CandlestickRepository candlestickRepository;
     SymbolRepository symbolRepository;
-    PatternFinderContext patternFinderContext;
     EventRepository eventRepository;
     SimpMessagingTemplate simpMessagingTemplate;
     EntityManager entityManager;
-
-    /**
-     * find patterns in reversed candlesticks
-     */
-    public void findPatternsAndSend() {
-
-        List<Symbol> symbolList = symbolRepository.findAll();
-        patternFinderContext.setPatternClasses(Arrays.asList(
-                //Speed30Pattern.class,
-                CascadePattern.class
-        ));
-
-        for (Symbol symbol : symbolList) {
-
-            List<Candlestick> candlestickList = candlestickRepository.findAllBySymbol(symbol.getId());
-            Collections.reverse(candlestickList);
-            PatternResultContainer resultContainer = patternFinderContext.find(candlestickList);
-
-            if (resultContainer.isEmpty()) {
-                continue;
-            }
-
-            Event event = new Event(symbol, resultContainer.toString());
-            this.saveAndSend(event, "/events");
-        }
-    }
 
     public void saveAndSend(Event event, String destination) {
         List<Event> oldEvent = entityManager
