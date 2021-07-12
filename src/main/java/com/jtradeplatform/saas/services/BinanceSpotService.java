@@ -23,9 +23,9 @@ public final class BinanceSpotService {
     BinanceApiWebSocketClient wsClient;
     BinanceApiRestClient restClient;
 
-    private  final CandlestickInterval DEFAULT_INTERVAL = CandlestickInterval.ONE_MINUTE;
+    private final CandlestickInterval DEFAULT_INTERVAL = CandlestickInterval.ONE_MINUTE;
 
-    BinanceSpotService(BinanceApiConfig binanceApiConfig) {
+    public BinanceSpotService(BinanceApiConfig binanceApiConfig) {
         this.binanceApiConfig = binanceApiConfig;
         this.wsClient = BinanceApiClientFactory.newInstance().newWebSocketClient();
         this.restClient = BinanceApiClientFactory.newInstance().newRestClient();

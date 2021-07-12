@@ -75,22 +75,23 @@ public class CandlestickService {
 
         int maxThreadCount = Runtime.getRuntime().availableProcessors();
         ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(maxThreadCount);
-        Collection<Future<?>> futures = new LinkedList<Future<?>>();
+        Collection<Future<?>> futures = new LinkedList<>();
         //
         for (Symbol symbol : symbolList) {
             futures.add(
                     executor.submit(() -> {
                         List<Candlestick> candlestickList = candlestickRepository.findAllBySymbol(symbol.getId());
                         Collections.reverse(candlestickList);
+                        List<PatternResultContainer> resultContainerList = patternFinderContext.find(candlestickList);
 
-                        PatternResultContainer resultContainer = patternFinderContext.find(candlestickList);
-
-                        if (resultContainer.isEmpty()) {
+                        if (resultContainerList.isEmpty()) {
                             return;
                         }
 
-                        Event event = new Event(symbol, resultContainer.toString());
-                        eventService.saveAndSend(event, "/events");
+                        resultContainerList.forEach(resultContainer -> {
+                            Event event = new Event(symbol, resultContainer.toString());
+                            eventService.saveAndSend(event, "/events");
+                        });
                     })
             );
         }

@@ -15,4 +15,4 @@
 
 # Yandex Tank
 
-docker run -v $(pwd)/docker/ya-tank:/var/loadtest -v $HOME/.ssh:/root/.ssh -it direvius/yandex-tank
+docker run -v $(pwd)/docker/ya-tank:/var/loadtest -it direvius/yandex-tank

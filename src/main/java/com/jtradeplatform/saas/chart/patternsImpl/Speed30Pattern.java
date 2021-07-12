@@ -1,30 +1,28 @@
 package com.jtradeplatform.saas.chart.patternsImpl;
 
 import com.jtradeplatform.saas.candlestick.Candlestick;
-import com.jtradeplatform.saas.chart.BasePattern;
+import com.jtradeplatform.saas.chart.AbstractPattern;
 import com.jtradeplatform.saas.chart.PriceHelper;
 
-public class Speed30Pattern extends BasePattern {
+public class Speed30Pattern extends AbstractPattern {
 
-    @Override
-    public void run() {
-        if (this.candlesticks.size() < 30) {
-            return;
-        }
-
-        Candlestick first = this.candlesticks.get(0);
-        Candlestick last = this.candlesticks.get(30);
-        double percent = 0;
+    protected void execute() {
         double minPercent = 15;
-        if (first.getClose() > last.getLow()) {
-            percent = Math.abs(PriceHelper.calcDiffPercent(first.getClose(), last.getLow()));
-        } else {
-            percent = Math.abs(PriceHelper.calcDiffPercent(first.getClose(), last.getHigh()));
-        }
+        double percentChange = getPricePercentChange();
+        boolean signal = percentChange > minPercent;
+        resultContainer.setSignal(signal, percentChange);
+        resultContainer.putViewText("speed", "За 30 мин изменение цены " + percentChange + "%");
+    }
 
-        if (percent > minPercent) {
-            this.resultContainer.addInfo("speed", "За 30 мин изменение цены " + percent + "%");
+    private double getPricePercentChange() {
+        double percent = 0;
+        if (this.candlesticks.size() < 30) {
+            return percent;
         }
-
+        Candlestick first = this.candlesticks.get(0);
+        Candlestick last = this.candlesticks.get(29);
+        double basePrice = first.getClose(),
+                anotherPrice = first.getClose() > last.getLow() ? last.getLow() : last.getHigh();
+        return PriceHelper.calcDiffPercentAbs(basePrice, anotherPrice);
     }
 }

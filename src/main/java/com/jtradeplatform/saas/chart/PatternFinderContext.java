@@ -9,25 +9,29 @@ import java.util.*;
 @Component
 public class PatternFinderContext {
 
-    List<Class<? extends BasePattern>> patternClasses;
+    List<Class<? extends AbstractPattern>> patternClasses;
 
-    public void setPatternClasses(List<Class<? extends BasePattern>> patternClasses) {
+    public void setPatternClasses(List<Class<? extends AbstractPattern>> patternClasses) {
         this.patternClasses = patternClasses;
     }
 
-    public PatternResultContainer find(List<Candlestick> candlestickList) {
-        PatternResultContainer resultContainer = new PatternResultContainer();
-
+    public List<PatternResultContainer> find(List<Candlestick> reversedCandlestickList) {
+        List<PatternResultContainer> resultList = new LinkedList<>();
         for (val ptClass : this.patternClasses) {
-            try {
-                BasePattern pt = ptClass.newInstance();
-                pt.setCandlesticks(candlestickList);
-                pt.setResultContainer(resultContainer);
-                pt.run();
-            } catch (InstantiationException | IllegalAccessException e) {
-                System.err.println("Pattern error" + e);
-            }
+            AbstractPattern pt = createPatternInstance(ptClass);
+            if (pt == null) continue;
+            pt.setCandlesticks(reversedCandlestickList);
+            resultList.add(pt.findSignal());
         }
-        return resultContainer;
+        return resultList;
+    }
+
+    private AbstractPattern createPatternInstance(Class<? extends AbstractPattern> patternClass) {
+        try {
+            return patternClass.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            System.err.println("Pattern error:" + e);
+            return null;
+        }
     }
 }
