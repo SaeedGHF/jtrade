@@ -13,8 +13,8 @@ import java.util.Objects;
 @Getter
 public final class PatternResultContainer {
 
-    private SignalData signalData;
-    private ViewData viewData;
+    private SignalData signalData = new SignalData();
+    private ViewData viewData = new ViewData();
     private boolean enableSignal = false, enableView = false;
 
     public void reset(boolean enableSignal, boolean enableView) {
@@ -50,6 +50,10 @@ public final class PatternResultContainer {
 
     public boolean isSignalExists() {
         return signalData.getSignal() != null;
+    }
+
+    public boolean getSignal() {
+        return signalData.getSignal();
     }
 
     private void checkSignalRule() {

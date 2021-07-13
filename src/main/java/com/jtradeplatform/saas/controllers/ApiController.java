@@ -15,6 +15,7 @@ import lombok.val;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -38,8 +39,12 @@ public class ApiController {
     }
 
     @GetMapping("chart/{symbol}")
-    public List<Candlestick> chart(@PathVariable("symbol") int symbol) {
-        return candlestickRep.findAllBySymbol(symbol);
+    public List<Candlestick> chart(@PathVariable("symbol") int symbolId) {
+        Optional<Symbol> symbol = symbolRep.findById(symbolId);
+        if (symbol.isPresent()) {
+            return candlestickRep.findAllBySymbol(symbol.get());
+        }
+        return new ArrayList<>();
     }
 
     @GetMapping("events/{symbol}")

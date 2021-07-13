@@ -35,7 +35,6 @@ public abstract class AbstractPattern {
         try {
             execute();
         } catch (RuntimeException e) {
-            System.err.println(e);
         }
     }
 }

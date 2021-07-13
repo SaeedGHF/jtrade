@@ -21,7 +21,7 @@ public class PatternFinderContext {
             AbstractPattern pt = createPatternInstance(ptClass);
             if (pt == null) continue;
             pt.setCandlesticks(reversedCandlestickList);
-            resultList.add(pt.findSignal());
+            resultList.add(pt.find());
         }
         return resultList;
     }

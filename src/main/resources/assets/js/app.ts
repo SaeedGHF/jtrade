@@ -130,8 +130,8 @@ class App {
             success: (data) => {
                 this.chart.setData(data);
                 let eventData = this.selectedEvent.data;
-                if ('lines' in eventData) {
-                    _.each(eventData.lines, (value, key) => {
+                if ('viewData' in eventData) {
+                    _.each(eventData.viewData.lines, (value, key) => {
                         value.price = key;
                         this.chart.addPriceLine(value);
                     });

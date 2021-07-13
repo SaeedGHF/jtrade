@@ -24,6 +24,7 @@ public class PatternResultContainerTests {
         resultContainer.putViewLine(0.4435, LineType.CASCADE_LINE);
         resultContainer.putViewText("test1", "text1");
         resultContainer.putViewLine(0.3435, LineType.VOLUME_LINE);
+        System.out.println(resultContainer);
     }
 
     @Test

@@ -1,11 +1,6 @@
 package com.jtradeplatform.saas.event;
 
-import com.jtradeplatform.saas.candlestick.Candlestick;
 import com.jtradeplatform.saas.candlestick.CandlestickRepository;
-import com.jtradeplatform.saas.chart.PatternFinderContext;
-import com.jtradeplatform.saas.chart.PatternResultContainer;
-import com.jtradeplatform.saas.chart.patternsImpl.*;
-import com.jtradeplatform.saas.symbol.Symbol;
 import com.jtradeplatform.saas.symbol.SymbolRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -13,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TemporalType;
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -36,12 +32,18 @@ public class EventService {
                 .setParameter("d", Date.from(Instant.now().minus(30, ChronoUnit.MINUTES)), TemporalType.DATE)
                 .getResultList();
 
-
         if (!oldEvent.isEmpty()) {
             return;
         }
 
         eventRepository.save(event);
         simpMessagingTemplate.convertAndSend(destination, event);
+    }
+
+    @Transactional
+    public void removeOldEvents() {
+        entityManager.createQuery("delete from Event where createdAt < :time")
+                .setParameter("time", Date.from(Instant.now().minus(12, ChronoUnit.HOURS)), TemporalType.DATE)
+                .executeUpdate();
     }
 }

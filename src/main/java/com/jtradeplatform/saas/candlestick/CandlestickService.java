@@ -47,7 +47,6 @@ public class CandlestickService {
         this.webSocket = webSocket;
         this.eventService = eventService;
         this.patternFinderContext = patternFinderContext;
-        this.runWatcher();
     }
 
     public static void addToQueue(Candlestick candlestick) {
@@ -61,9 +60,9 @@ public class CandlestickService {
         }
     }
 
-
     /**
      * find patterns in reversed candlesticks
+     * TODO: refactoring
      */
     public void findPatternsAndSend() {
 
@@ -80,7 +79,7 @@ public class CandlestickService {
         for (Symbol symbol : symbolList) {
             futures.add(
                     executor.submit(() -> {
-                        List<Candlestick> candlestickList = candlestickRepository.findAllBySymbol(symbol.getId());
+                        List<Candlestick> candlestickList = candlestickRepository.findAllBySymbol(symbol);
                         Collections.reverse(candlestickList);
                         List<PatternResultContainer> resultContainerList = patternFinderContext.find(candlestickList);
 
@@ -89,6 +88,9 @@ public class CandlestickService {
                         }
 
                         resultContainerList.forEach(resultContainer -> {
+                            if (!resultContainer.getSignal()) {
+                                return;
+                            }
                             Event event = new Event(symbol, resultContainer.toString());
                             eventService.saveAndSend(event, "/events");
                         });
@@ -99,19 +101,17 @@ public class CandlestickService {
         for (Future<?> future : futures) {
             try {
                 future.get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            } catch (InterruptedException | ExecutionException e) {
+                //e.printStackTrace();
             }
         }
     }
 
     public void updateSymbolChart(Symbol symbol) {
-        int minutes = 3 * 24 * 60;
         int limit = 1000;
         long to = Instant.now().toEpochMilli();
-        Instant fromInstant = Instant.now().minus(minutes, ChronoUnit.MINUTES);
+        Candlestick lastCandlestick = candlestickRepository.findLastBySymbol(symbol);
+        Instant fromInstant = lastCandlestick.getTime();
 
         while (true) {
             try {
@@ -121,9 +121,9 @@ public class CandlestickService {
 
                 if (candlesticks.isEmpty()) break;
 
-                Thread.sleep(100);
+                Thread.sleep(80);
             } catch (Exception e) {
-                System.err.println("Update error (" + symbol.getName() + "): " + e);
+                System.err.println("Update chart error (" + symbol.getName() + "): " + e);
                 break;
             }
         }
