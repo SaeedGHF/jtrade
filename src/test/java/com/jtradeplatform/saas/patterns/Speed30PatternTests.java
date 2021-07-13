@@ -13,15 +13,43 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class Speed30PatternTests {
 
-    @Test
-    public void findTest() throws FileNotFoundException {
+    private final double SIGNAL_VALUE = 0.1332991308546543D;
+    private final boolean SIGNAL = false;
+    private final String VIEW_TEXT_KEY = "speed";
+
+    private Speed30Pattern getPattern() throws FileNotFoundException {
         Speed30Pattern pattern = new Speed30Pattern();
         pattern.setCandlesticks(CandlestickLoader.getReversedData());
-        PatternResultContainer resultContainer = pattern.find();
+        return pattern;
+    }
+
+    @Test
+    public void findTest() throws FileNotFoundException {
+        PatternResultContainer resultContainer = getPattern().find();
         PatternResultContainer.SignalData signalData = resultContainer.getSignalData();
         PatternResultContainer.ViewData viewData = resultContainer.getViewData();
-        assertEquals(signalData.getValue(), 0.1332991308546543D);
-        assertEquals(signalData.getSignal(), false);
-        assertNotNull(viewData.getTexts().get("speed"));
+        assertEquals(signalData.getValue(), SIGNAL_VALUE);
+        assertEquals(signalData.getSignal(), SIGNAL);
+        assertNotNull(viewData.getTexts().get(VIEW_TEXT_KEY));
+    }
+
+    @Test
+    public void findSignalTest() throws FileNotFoundException {
+        PatternResultContainer resultContainer = getPattern().findSignal();
+        PatternResultContainer.SignalData signalData = resultContainer.getSignalData();
+        PatternResultContainer.ViewData viewData = resultContainer.getViewData();
+        assertEquals(signalData.getValue(), SIGNAL_VALUE);
+        assertEquals(signalData.getSignal(), SIGNAL);
+        assertNull(viewData.getTexts().get(VIEW_TEXT_KEY));
+    }
+
+    @Test
+    public void findViewTest() throws FileNotFoundException {
+        PatternResultContainer resultContainer = getPattern().findView();
+        PatternResultContainer.SignalData signalData = resultContainer.getSignalData();
+        PatternResultContainer.ViewData viewData = resultContainer.getViewData();
+        assertEquals(signalData.getValue(), SIGNAL_VALUE);
+        assertEquals(signalData.getSignal(), SIGNAL);
+        assertNotNull(viewData.getTexts().get(VIEW_TEXT_KEY));
     }
 }

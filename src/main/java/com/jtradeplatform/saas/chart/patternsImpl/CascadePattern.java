@@ -18,7 +18,7 @@ public class CascadePattern extends AbstractPattern {
     private int candlestickCounter = 0;
 
     protected void execute() {
-        int MIN_HISTORY_SIZE = 500;
+        int MIN_HISTORY_SIZE = 300;
         if (this.candlesticks.size() < MIN_HISTORY_SIZE) return;
         setLastPrice();
 
@@ -36,6 +36,7 @@ public class CascadePattern extends AbstractPattern {
             if (pricePoints.size() > MAX_PRICE_POINTS) break;
             addOrUpdatePricePoint();
         }
+        if (!resultContainer.isSignalExists()) saveSignal();
 
         convertPricePointsToLines();
     }
@@ -63,9 +64,17 @@ public class CascadePattern extends AbstractPattern {
 
     private void setSignal() {
         if (pricePoints.size() == 2) {
-            double percent = calcChangePercent(lastPrice, pricePoints.getFirst().price);
-            resultContainer.setSignal(isValidActivationDistance(percent), percent);
+            saveSignal();
         }
+    }
+
+    private void saveSignal() {
+        double percent = calcChangePercent();
+        resultContainer.setSignal(isValidActivationDistance(percent), percent);
+    }
+
+    private double calcChangePercent() {
+        return Math.abs(PriceHelper.calcDiffPercent(lastPrice, pricePoints.getFirst().price));
     }
 
     private boolean isGrayZone() {
@@ -127,10 +136,6 @@ public class CascadePattern extends AbstractPattern {
     private boolean isValidActivationDistance(double percent) {
         double MAX_ACTIVATE_DISTANCE = 0.5d;
         return percent <= MAX_ACTIVATE_DISTANCE;
-    }
-
-    private double calcChangePercent(double targetPrice, double anotherPrice) {
-        return Math.abs(PriceHelper.calcDiffPercent(targetPrice, anotherPrice));
     }
 
     private void addResistanceLine(double price) {

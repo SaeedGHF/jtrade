@@ -48,6 +48,10 @@ public final class PatternResultContainer {
         signalData.signalRequiredNonNull();
     }
 
+    public boolean isSignalExists() {
+        return signalData.getSignal() != null;
+    }
+
     private void checkSignalRule() {
         if (enableSignal && signalData.getSignal() != null) {
             throw new RuntimeException("`Signal` already exists");
