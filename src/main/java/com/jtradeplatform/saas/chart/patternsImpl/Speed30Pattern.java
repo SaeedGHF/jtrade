@@ -19,10 +19,10 @@ public class Speed30Pattern extends AbstractPattern {
         if (this.candlesticks.size() < 30) {
             return percent;
         }
-        Candlestick first = this.candlesticks.get(0);
-        Candlestick last = this.candlesticks.get(29);
-        double basePrice = first.getClose(),
-                anotherPrice = first.getClose() > last.getLow() ? last.getLow() : last.getHigh();
-        return PriceHelper.calcDiffPercentAbs(basePrice, anotherPrice);
+        Candlestick current = this.candlesticks.get(0);
+        Candlestick old = this.candlesticks.get(29);
+        double currentPrice = current.getClose(),
+                oldPrice = current.getClose() > old.getLow() ? old.getLow() : old.getHigh();
+        return PriceHelper.calcDiffPercentAbs(currentPrice, oldPrice);
     }
 }

@@ -5,10 +5,6 @@ import com.influxdb.annotations.Measurement;
 
 import java.time.Instant;
 
-/**
- * TODO: implement pattern builder
- * не больше 2 параметров в функции
- */
 @Measurement(name = "candlestick")
 public class Candlestick {
 
@@ -97,6 +93,6 @@ public class Candlestick {
 
     @Override
     public String toString() {
-        return String.format("%s;%s;%s;%s;%s", time, open, high, low, close);
+        return String.format("%s;%s;%s;%s;%s;%s", symbol, time, open, high, low, close);
     }
 }

@@ -36,7 +36,7 @@ public class CascadePattern extends AbstractPattern {
             if (pricePoints.size() > MAX_PRICE_POINTS) break;
             addOrUpdatePricePoint();
         }
-        if (!resultContainer.isSignalExists()) saveSignal();
+        saveSignal();
 
         convertPricePointsToLines();
     }
@@ -69,6 +69,9 @@ public class CascadePattern extends AbstractPattern {
     }
 
     private void saveSignal() {
+        if (resultContainer.isSignalExists()) {
+            return;
+        }
         double percent = calcChangePercent();
         resultContainer.setSignal(isValidActivationDistance(percent), percent);
     }
