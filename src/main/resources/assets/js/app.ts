@@ -41,7 +41,7 @@ class App {
 
             $.ajax({
                 type: "POST",
-                url: "/api/chart/" + this.selectedEvent.symbol.id + "/refresh",
+                url: "/api/charts/" + this.selectedEvent.symbol.id + "/refresh",
                 success: () => {
                     alert("История обновлена");
                     this.selectEvent(this.selectedEvent);
@@ -126,7 +126,7 @@ class App {
         }
 
         $.ajax({
-            url: "/api/chart/" + this.selectedEvent.symbol.id,
+            url: "/api/charts/" + this.selectedEvent.symbol.id,
             success: (data) => {
                 this.chart.setData(data);
                 let eventData = this.selectedEvent.data;

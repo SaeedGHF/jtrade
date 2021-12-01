@@ -30,12 +30,12 @@ public class ApiController {
     CandlestickRepository candlestickRep;
     EventRepository eventRep;
 
-    @GetMapping("symbols/{symbol}")
+    @GetMapping("/symbols/{symbol}")
     public Optional<Symbol> symbol(@PathVariable("symbol") int symbol) {
         return symbolRep.findById(symbol);
     }
 
-    @GetMapping("chart/{symbol}")
+    @GetMapping("/charts/{symbol}")
     public List<Candlestick> chart(@PathVariable("symbol") int symbolId) {
         Optional<Symbol> symbol = symbolRep.findById(symbolId);
         if (symbol.isPresent()) {
@@ -44,23 +44,23 @@ public class ApiController {
         return new ArrayList<>();
     }
 
-    @GetMapping("events/{symbol}")
+    @GetMapping("/events/{symbol}")
     public List<Event> events(@PathVariable("symbol") int symbol) {
         return eventRep.findBySymbol(symbolRep.getById(symbol));
     }
 
-    @GetMapping("events")
+    @GetMapping("/events")
     public List<Event> eventsAll() {
         return eventRep.findAll();
     }
 
-    @PostMapping("chart/{symbol}/refresh")
+    @PostMapping("/charts/{symbol}/refresh")
     public void refreshSymbolChart(@PathVariable int symbol) {
         Optional<Symbol> symbolEntity = symbolRep.findById(symbol);
         symbolEntity.ifPresent(value -> candlestickService.updateSymbolChart(value));
     }
 
-    @PostMapping("chart/refresh")
+    @PostMapping("/charts/refresh")
     public void refreshAllCharts() {
         candlestickService.updateAllCharts();
     }

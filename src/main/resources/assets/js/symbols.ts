@@ -5,7 +5,7 @@ $(".refresh-history").on('click', function (e) {
 
     let symbol = $(this).closest("tr").data("id");
     $.ajax({
-        url: `/api/chart/${symbol}/refresh`,
+        url: `/api/charts/${symbol}/refresh`,
         type: 'POST',
         success: function () {
             alert("История обновлена")
@@ -30,7 +30,7 @@ $('#symbols-refresh').on('click', function (){
 
 $('#charts-refresh').on('click', function (){
     $.ajax({
-        url: `/api/chart/refresh`,
+        url: `/api/charts/refresh`,
         type: 'POST',
         success: function () {
             alert("История обновлена")
