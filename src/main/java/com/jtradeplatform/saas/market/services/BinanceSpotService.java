@@ -1,4 +1,4 @@
-package com.jtradeplatform.saas.services;
+package com.jtradeplatform.saas.market.services;
 
 import com.binance.api.client.BinanceApiCallback;
 import com.binance.api.client.BinanceApiClientFactory;

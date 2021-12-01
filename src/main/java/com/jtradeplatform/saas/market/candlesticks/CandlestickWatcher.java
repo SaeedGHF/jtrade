@@ -3,7 +3,7 @@ package com.jtradeplatform.saas.market.candlesticks;
 import com.binance.api.client.BinanceApiCallback;
 import com.binance.api.client.domain.event.CandlestickEvent;
 import com.jtradeplatform.saas.candlestick.Candlestick;
-import com.jtradeplatform.saas.services.BinanceSpotService;
+import com.jtradeplatform.saas.market.services.BinanceSpotService;
 import com.jtradeplatform.saas.symbol.Symbol;
 import com.jtradeplatform.saas.symbol.SymbolRepository;
 import lombok.RequiredArgsConstructor;

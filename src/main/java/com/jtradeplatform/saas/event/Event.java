@@ -1,12 +1,16 @@
 package com.jtradeplatform.saas.event;
 
 import com.jtradeplatform.saas.symbol.Symbol;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "events")
 public class Event {
     @Id
@@ -33,30 +37,6 @@ public class Event {
         this.data = pattern;
     }
 
-    public String getData() {
-        return data;
-    }
-
-    public void setData(String data) {
-        this.data = data;
-    }
-
-    public Symbol getSymbol() {
-        return symbol;
-    }
-
-    public void setSymbol(Symbol symbol) {
-        this.symbol = symbol;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
     @Override
     public String toString() {
         return "Event{" +
@@ -65,9 +45,5 @@ public class Event {
                 ", symbol=" + symbol +
                 ", createdAt=" + createdAt +
                 '}';
-    }
-
-    public String getType() {
-        return type;
     }
 }

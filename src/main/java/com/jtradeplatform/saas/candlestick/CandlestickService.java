@@ -6,7 +6,7 @@ import com.jtradeplatform.saas.chart.patternsImpl.CascadePattern;
 import com.jtradeplatform.saas.chart.patternsImpl.Speed30Pattern;
 import com.jtradeplatform.saas.event.Event;
 import com.jtradeplatform.saas.event.EventService;
-import com.jtradeplatform.saas.services.BinanceSpotService;
+import com.jtradeplatform.saas.market.services.BinanceSpotService;
 import com.jtradeplatform.saas.symbol.Symbol;
 import com.jtradeplatform.saas.symbol.SymbolRepository;
 import lombok.AllArgsConstructor;

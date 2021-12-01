@@ -5,7 +5,7 @@ import com.jtradeplatform.saas.candlestick.CandlestickRepository;
 import com.jtradeplatform.saas.candlestick.CandlestickService;
 import com.jtradeplatform.saas.event.Event;
 import com.jtradeplatform.saas.event.EventRepository;
-import com.jtradeplatform.saas.services.BinanceSpotService;
+import com.jtradeplatform.saas.market.services.BinanceSpotService;
 import com.jtradeplatform.saas.symbol.Symbol;
 import com.jtradeplatform.saas.symbol.SymbolRepository;
 import com.jtradeplatform.saas.symbol.SymbolService;

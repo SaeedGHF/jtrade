@@ -1,4 +1,4 @@
-package com.jtradeplatform.saas.services;
+package com.jtradeplatform.saas.market.services;
 
 import com.binance.client.model.market.ExchangeInformation;
 import com.jtradeplatform.saas.configs.BinanceApiConfig;
@@ -16,7 +16,11 @@ public final class BinanceFuturesService {
 
     public ExchangeInformation getExchangeInfo() {
         RequestOptions options = new RequestOptions();
-        SyncRequestClient syncRequestClient = SyncRequestClient.create(binanceApiConfig.getApiKey(), binanceApiConfig.getSecretKey(), options);
+        SyncRequestClient syncRequestClient = SyncRequestClient.create(
+                binanceApiConfig.getApiKey(),
+                binanceApiConfig.getSecretKey(),
+                options
+        );
         return syncRequestClient.getExchangeInformation();
     }
 }
