@@ -31,7 +31,6 @@ public class CandlestickService {
 
     /**
      * find patterns in reversed candlesticks
-     * TODO: refactoring
      */
     public void findPatternsAndSend() {
 
@@ -72,7 +71,7 @@ public class CandlestickService {
                 future.get();
             } catch (InterruptedException | ExecutionException e) {
                 //e.printStackTrace();
-                // TODO: разобраться с исключениями, часто возникают
+                // TODO: fix, to many exceptions
             }
         }
     }
@@ -84,9 +83,6 @@ public class CandlestickService {
         }
     }
 
-    /**
-     * TODO: refactoring
-     */
     public void updateSymbolChart(Symbol symbol) {
         int limit = 1000;
         long to = Instant.now().toEpochMilli();

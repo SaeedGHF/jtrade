@@ -17,7 +17,7 @@ public class CandlestickLoader {
         String absolutePath = file.getAbsolutePath();
 
         List<Candlestick> candlesticks = new ArrayList<>();
-        try (Scanner scanner = new Scanner(new File(absolutePath + "/candlesticks.csv"));) {
+        try (Scanner scanner = new Scanner(new File(absolutePath + "/candlesticks.csv"))) {
             while (scanner.hasNextLine()) {
                 String row = scanner.nextLine();
                 List<Double> numbs = new ArrayList<>();
@@ -25,7 +25,13 @@ public class CandlestickLoader {
                 Arrays.stream(strAll).skip(1).forEach((str) -> {
                     numbs.add(Double.parseDouble(str));
                 });
-                candlesticks.add(new Candlestick(Instant.parse(strAll[0]), "1m", "1", numbs.get(0), numbs.get(1), numbs.get(2), numbs.get(3)));
+                candlesticks.add(new Candlestick(
+                        Instant.parse(strAll[0]), "1m", "1",
+                        numbs.get(0),
+                        numbs.get(1),
+                        numbs.get(2),
+                        numbs.get(3)
+                ));
             }
         }
         Collections.reverse(candlesticks);

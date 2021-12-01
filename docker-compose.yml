@@ -11,7 +11,7 @@ services:
     image: postgres:13.2-alpine
     restart: always
     ports:
-      - 5432:5432
+      - "5432:5432"
     volumes:
       - ${DATA_PATH}/pgdata:/var/lib/postgresql/data
     environment:
@@ -26,7 +26,7 @@ services:
     image: influxdb:2.0.6-alpine
     restart: always
     ports:
-      - 8086:8086
+      - "8086:8086"
     volumes:
       - ${DATA_PATH}/influxdb:/var/lib/influxdb2
     environment:

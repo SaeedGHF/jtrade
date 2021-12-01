@@ -1,6 +1,5 @@
 package com.jtradeplatform.saas.controllers;
 
-import com.jtradeplatform.saas.SaasApplication;
 import com.jtradeplatform.saas.candlestick.Candlestick;
 import com.jtradeplatform.saas.candlestick.CandlestickRepository;
 import com.jtradeplatform.saas.candlestick.CandlestickService;
@@ -11,12 +10,10 @@ import com.jtradeplatform.saas.symbol.Symbol;
 import com.jtradeplatform.saas.symbol.SymbolRepository;
 import com.jtradeplatform.saas.symbol.SymbolService;
 import lombok.AllArgsConstructor;
-import lombok.val;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,12 +68,12 @@ public class ApiController {
     @PostMapping("/symbols/refresh")
     public String symbol() {
         symbolService.refreshAll();
-        return "faq";
+        return "ok";
     }
 
     @PostMapping("/charts/clear")
     public String clear() {
         candlestickService.deleteAll();
-        return "faq";
+        return "ok";
     }
 }

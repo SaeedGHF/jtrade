@@ -63,10 +63,10 @@ public class CandlestickRepository {
         );
 
         List<Candlestick> result = queryApi.query(flux, Candlestick.class);
-        return result.size() != 0 ? result.get(0) : createFakeCandlestick(symbol);
+        return result.size() != 0 ? result.get(0) : createEmptyCandlestick(symbol);
     }
 
-    private Candlestick createFakeCandlestick(Symbol symbol) {
+    private Candlestick createEmptyCandlestick(Symbol symbol) {
         return new Candlestick(
                 Instant.now().minus(CANDLESTICK_DAYS_LIFETIME, ChronoUnit.DAYS).truncatedTo(ChronoUnit.MINUTES),
                 CandlestickInterval.ONE_MINUTE.toString(),

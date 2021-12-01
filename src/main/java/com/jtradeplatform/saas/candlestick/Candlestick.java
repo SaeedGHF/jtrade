@@ -2,10 +2,12 @@ package com.jtradeplatform.saas.candlestick;
 
 import com.influxdb.annotations.Column;
 import com.influxdb.annotations.Measurement;
+import lombok.Getter;
 
 import java.time.Instant;
 
 @Measurement(name = "candlestick")
+@Getter
 public class Candlestick {
 
     private static final String MEASUREMENT_NAME = "candlestick";
@@ -61,34 +63,6 @@ public class Candlestick {
 
     public static String getMeasureName() {
         return MEASUREMENT_NAME;
-    }
-
-    public Instant getTime() {
-        return time;
-    }
-
-    public String getPeriod() {
-        return period;
-    }
-
-    public String getSymbol() {
-        return symbol;
-    }
-
-    public Double getOpen() {
-        return open;
-    }
-
-    public Double getHigh() {
-        return high;
-    }
-
-    public Double getLow() {
-        return low;
-    }
-
-    public Double getClose() {
-        return close;
     }
 
     @Override
